@@ -1,0 +1,176 @@
+/* UI Components CSS */
+.stat-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-title {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.stat-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-icon-wrapper.primary {
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.stat-icon-wrapper.warning {
+  background-color: #ffe0b2;
+  color: var(--warning);
+}
+
+.stat-icon-wrapper.emergency {
+  background-color: #ffcdd2;
+  color: var(--emergency);
+}
+
+.stat-trend {
+  font-size: 0.875rem;
+}
+
+.trend-value.positive {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.trend-value.negative {
+  color: var(--emergency);
+  font-weight: 600;
+}
+
+.trend-label {
+  color: var(--text-muted);
+}
+
+/* Pet Card */
+.pet-card {
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.pet-card:hover .pet-img {
+  transform: scale(1.05);
+}
+
+.pet-img-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+.pet-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  box-shadow: var(--shadow-soft);
+}
+
+.pet-status-badge {
+  position: absolute;
+  bottom: 0;
+  right: -10px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 12px;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border: 2px solid white;
+}
+
+.status-success { background-color: var(--success); }
+.status-warning { background-color: var(--warning); }
+.status-emergency { background-color: var(--emergency); }
+.status-default { background-color: var(--text-muted); }
+
+.pet-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.pet-type {
+  font-size: 0.875rem;
+}
+
+.text-muted { color: var(--text-muted); }
+.mt-2 { margin-top: 0.5rem; }
+.mb-4 { margin-bottom: 1rem; }
+
+/* Custom Button */
+.custom-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius-md);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.custom-btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+  box-shadow: 0 4px 6px rgba(76, 175, 80, 0.2);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  box-shadow: 0 6px 12px rgba(76, 175, 80, 0.3);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+
+.btn-outline:hover {
+  background-color: var(--primary-light);
+}
+
+.btn-text {
+  background-color: transparent;
+  color: var(--text-muted);
+}
+
+.btn-text:hover {
+  background-color: rgba(0,0,0,0.05);
+  color: var(--text-main);
+}
+
+.w-full { width: 100%; }
+.text-sm { font-size: 0.875rem; }
