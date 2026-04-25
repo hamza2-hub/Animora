@@ -1,9 +1,14 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import '../../styles/components/ui.css';
 
 const StatCard = ({ title, value, icon: Icon, trend, colorClass = 'primary' }) => {
   return (
-    <div className={`card stat-card animate-fade-in`}>
+    <motion.div 
+      className={`card stat-card animate-fade-in`}
+      whileHover={{ y: -4, scale: 1.01 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+    >
       <div className="stat-header flex justify-between items-center">
         <div>
           <p className="stat-title">{title}</p>
@@ -21,7 +26,7 @@ const StatCard = ({ title, value, icon: Icon, trend, colorClass = 'primary' }) =
           <span className="trend-label">vs last month</span>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

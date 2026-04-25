@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import '../../styles/components/PetCard.css';
 
 const PetCard = ({ name, type, age, status, image }) => {
@@ -12,7 +13,11 @@ const PetCard = ({ name, type, age, status, image }) => {
   };
 
   return (
-    <div className="pet-card-modern">
+    <motion.div 
+      className="pet-card-modern cursor-pointer"
+      whileHover={{ y: -4, scale: 1.01 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+    >
       <div className="pet-card-image-wrapper">
         <img src={image} alt={name} className="pet-card-image" />
       </div>
@@ -31,7 +36,7 @@ const PetCard = ({ name, type, age, status, image }) => {
           {age && <span className="pet-card-info">{age}</span>}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

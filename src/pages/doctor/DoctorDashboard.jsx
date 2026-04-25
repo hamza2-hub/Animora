@@ -1,49 +1,107 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Users, Calendar as CalendarIcon, Syringe, Activity, 
-  Clock, AlertTriangle, ArrowRight 
+  Clock, AlertTriangle, ArrowRight, CheckCircle 
 } from 'lucide-react';
 import StatCard from '../../components/ui/StatCard';
 import Button from '../../components/ui/Button';
 import PetCard from '../../components/ui/PetCard';
-import { useAppContext } from '../../core/context/AppContext';
+import { SkeletonStat, SkeletonCard } from '../../components/ui/Skeleton';
+import { toast } from 'react-hot-toast';
 import { mockStats, mockSchedule, mockPatients } from '../../data/mockData';
 import '../../styles/pages/dashboard.css';
 
 const DoctorDashboard = () => {
-  const { activeTab } = useAppContext();
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generateSuccess, setGenerateSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const renderOverview = () => (
-    <>
+  React.useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleGenerateReport = () => {
+    setIsGenerating(true);
+    setTimeout(() => {
+      setIsGenerating(false);
+      setGenerateSuccess(true);
+      toast.success('Report generated successfully!');
+      setTimeout(() => setGenerateSuccess(false), 3000); // Reset after 3 seconds
+    }, 2000);
+  };
+
+  return (
+    <div className="animate-fade-in">
+      <div className="dashboard-header flex justify-between items-center hide-mobile">
+        <div>
+          <h1 className="dashboard-title capitalize">
+            Dashboard Overview
+          </h1>
+          <p className="dashboard-subtitle">
+            Welcome back, Dr. John
+          </p>
+        </div>
+        <Button 
+          onClick={handleGenerateReport} 
+          disabled={isGenerating || generateSuccess}
+          className={generateSuccess ? 'bg-green-600 border-green-600' : ''}
+        >
+          {isGenerating ? (
+            <span className="flex items-center gap-2">
+              <span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span>
+              Generating...
+            </span>
+          ) : generateSuccess ? (
+            <span className="flex items-center gap-2">
+              <CheckCircle size={18} /> Report Ready!
+            </span>
+          ) : (
+            'Generate Report'
+          )}
+        </Button>
+      </div>
+
       <div className="stats-grid">
-        <StatCard 
-          title="Active Patients" 
-          value={mockStats.totalPatients} 
-          icon={Users} 
-          trend={{ positive: true, value: 12 }} 
-          colorClass="primary"
-        />
-        <StatCard 
-          title="Appointments Today" 
-          value={mockStats.todayAppointments} 
-          icon={CalendarIcon} 
-          trend={{ positive: true, value: 5 }} 
-          colorClass="primary"
-        />
-        <StatCard 
-          title="Vaccination Rate" 
-          value={`${mockStats.vaccinationRate}%`} 
-          icon={Syringe} 
-          trend={{ positive: true, value: 2 }} 
-          colorClass="primary"
-        />
-        <StatCard 
-          title="Emergency Cases" 
-          value={mockStats.emergencies} 
-          icon={Activity} 
-          trend={{ positive: false, value: 1 }} 
-          colorClass="emergency"
-        />
+        {isLoading ? (
+          <>
+            <SkeletonStat />
+            <SkeletonStat />
+            <SkeletonStat />
+            <SkeletonStat />
+          </>
+        ) : (
+          <>
+            <StatCard 
+              title="Active Patients" 
+              value={mockStats.totalPatients} 
+              icon={Users} 
+              trend={{ positive: true, value: 12 }} 
+              colorClass="primary"
+            />
+            <StatCard 
+              title="Appointments Today" 
+              value={mockStats.todayAppointments} 
+              icon={CalendarIcon} 
+              trend={{ positive: true, value: 5 }} 
+              colorClass="primary"
+            />
+            <StatCard 
+              title="Vaccination Rate" 
+              value={`${mockStats.vaccinationRate}%`} 
+              icon={Syringe} 
+              trend={{ positive: true, value: 2 }} 
+              colorClass="primary"
+            />
+            <StatCard 
+              title="Emergency Cases" 
+              value={mockStats.emergencies} 
+              icon={Activity} 
+              trend={{ positive: false, value: 1 }} 
+              colorClass="emergency"
+            />
+          </>
+        )}
       </div>
 
       <div className="dashboard-grid">
@@ -54,21 +112,28 @@ const DoctorDashboard = () => {
               <h2 className="section-title">Today's Schedule</h2>
               <Button variant="text" size="small">View All</Button>
             </div>
-            <div className="timeline">
-              {mockSchedule.map((item, idx) => (
-                <div key={item.id} className="timeline-item">
-                  <div className="timeline-time">{item.time}</div>
-                  <div className="timeline-dot"><Clock size={20} /></div>
-                  <div className="timeline-content relative">
-                    <h3 className="timeline-patient">{item.patient}</h3>
-                    <p className="timeline-reason">{item.reason}</p>
-                    <span className={`timeline-status status-${item.status}`}>
-                      {item.status}
-                    </span>
+            {isLoading ? (
+              <div className="flex flex-col gap-4 mt-4">
+                <div style={{ height: '50px', background: 'var(--border)', borderRadius: '8px', opacity: 0.5 }} className="skeleton" />
+                <div style={{ height: '50px', background: 'var(--border)', borderRadius: '8px', opacity: 0.5 }} className="skeleton" />
+              </div>
+            ) : (
+              <div className="timeline">
+                {mockSchedule.map((item, idx) => (
+                  <div key={item.id} className="timeline-item">
+                    <div className="timeline-time">{item.time}</div>
+                    <div className="timeline-dot"><Clock size={20} /></div>
+                    <div className="timeline-content relative">
+                      <h3 className="timeline-patient">{item.patient}</h3>
+                      <p className="timeline-reason">{item.reason}</p>
+                      <span className={`timeline-status status-${item.status}`}>
+                        {item.status}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Recent Patients */}
@@ -78,9 +143,17 @@ const DoctorDashboard = () => {
               <Button variant="text">See All <ArrowRight size={16} className="ml-1" /></Button>
             </div>
             <div className="recent-patients-grid">
-              {mockPatients.slice(0, 3).map(pet => (
-                <PetCard key={pet.id} name={pet.name} type={pet.type} age={pet.breed || pet.age} status={pet.status} image={pet.image} />
-              ))}
+              {isLoading ? (
+                <>
+                  <SkeletonCard />
+                  <SkeletonCard />
+                  <SkeletonCard />
+                </>
+              ) : (
+                mockPatients.slice(0, 3).map(pet => (
+                  <PetCard key={pet.id} name={pet.name} type={pet.type} age={pet.breed || pet.age} status={pet.status} image={pet.image} />
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -125,29 +198,6 @@ const DoctorDashboard = () => {
           </div>
         </div>
       </div>
-    </>
-  );
-
-  return (
-    <div className="animate-fade-in">
-      <div className="dashboard-header flex justify-between items-center hide-mobile">
-        <div>
-          <h1 className="dashboard-title capitalize">
-            {activeTab === 'dashboard' ? 'Dashboard Overview' : activeTab}
-          </h1>
-          <p className="dashboard-subtitle">
-            {activeTab === 'dashboard' ? 'Welcome back, Dr. John' : 'Manage your clinic data efficiently'}
-          </p>
-        </div>
-        <Button>Generate Report</Button>
-      </div>
-
-      {activeTab === 'dashboard' ? renderOverview() : (
-        <div className="section-card animate-slide-up text-center p-8">
-          <h2 className="section-title text-muted">Feature Coming Soon</h2>
-          <p className="text-muted mt-2">The {activeTab} section is currently under active development.</p>
-        </div>
-      )}
     </div>
   );
 };
