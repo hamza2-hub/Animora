@@ -1,19 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { PawPrint, User, Stethoscope } from 'lucide-react';
-import { useAppContext } from '../../core/context/AppContext';
+import { PawPrint, Loader2, User, Stethoscope } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 import Button from '../../components/ui/Button';
+import toast from 'react-hot-toast';
 import '../../styles/pages/auth.css';
 
 const Login = () => {
   const [role, setRole] = useState('user');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  
   const navigate = useNavigate();
-  const { login } = useAppContext();
+  const { login, user, profile } = useAuth();
 
-  const handleLogin = (e) => {
+  useEffect(() => {
+    if (user && profile) {
+      navigate(profile.role === 'doctor' ? '/doctor-dashboard' : '/dashboard');
+    }
+  }, [user, profile, navigate]);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    login(role, { firstName: 'John', lastName: 'Doe', email: 'john@example.com' });
-    navigate(`/${role}-dashboard`);
+    setIsLoading(true);
+    try {
+      await login(email, password);
+      toast.success('Successfully logged in!');
+      // Navigation handled by useEffect
+    } catch (error) {
+      toast.error(error.message || 'Failed to sign in');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -41,13 +60,13 @@ const Login = () => {
           </div>
 
           <form onSubmit={handleLogin}>
-            <div className="role-selector">
+            <div className="role-selector" style={{ marginBottom: '1.5rem' }}>
               <button 
                 type="button" 
                 className={`role-btn ${role === 'user' ? 'selected' : ''}`}
                 onClick={() => setRole('user')}
               >
-                <User size={24} />
+                <User size={20} />
                 Pet Owner
               </button>
               <button 
@@ -55,22 +74,38 @@ const Login = () => {
                 className={`role-btn ${role === 'doctor' ? 'selected' : ''}`}
                 onClick={() => setRole('doctor')}
               >
-                <Stethoscope size={24} />
+                <Stethoscope size={20} />
                 Veterinarian
               </button>
             </div>
 
             <div className="form-group">
               <label className="form-label">Email Address</label>
-              <input type="email" required className="form-input" placeholder="Enter your email" />
+              <input 
+                type="email" 
+                required 
+                className="form-input" 
+                placeholder="Enter your email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
 
             <div className="form-group">
               <label className="form-label">Password</label>
-              <input type="password" required className="form-input" placeholder="Enter your password" />
+              <input 
+                type="password" 
+                required 
+                className="form-input" 
+                placeholder="Enter your password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
 
-            <Button type="submit" className="w-full mt-2">Sign In</Button>
+            <Button type="submit" className="w-full mt-2" disabled={isLoading}>
+              {isLoading ? <Loader2 className="animate-spin" size={20} /> : 'Sign In'}
+            </Button>
           </form>
 
           <div className="auth-footer">

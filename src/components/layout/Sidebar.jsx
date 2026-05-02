@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { useAppContext } from '../../core/context/AppContext';
+import { useAuth } from '../../hooks/useAuth';
 import { 
   LayoutDashboard, Calendar, Users, 
   UserCheck, Syringe, FileText, 
@@ -19,13 +19,14 @@ const doctorLinks = [
 ];
 
 const userLinks = [
-  { path: '/user-dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { path: '/user-dashboard/pets', label: 'My Pets', icon: PawPrint },
-  { path: '/user-dashboard/appointments', label: 'Appointments', icon: Calendar },
+  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
+  { path: '/dashboard/pets', label: 'My Pets', icon: PawPrint },
+  { path: '/dashboard/appointments', label: 'Appointments', icon: Calendar },
 ];
 
 const Sidebar = ({ isCollapsed, toggleSidebar }) => {
-  const { userRole, logout } = useAppContext();
+  const { profile, logout } = useAuth();
+  const userRole = profile?.role || 'user';
   
   const links = userRole === 'doctor' ? doctorLinks : userLinks;
 

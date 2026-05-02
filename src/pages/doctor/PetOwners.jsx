@@ -1,8 +1,34 @@
-import React from 'react';
-import { UserCheck } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { UserCheck, Loader2 } from 'lucide-react';
 import Button from '../../components/ui/Button';
+import { supabase } from '../../lib/supabase';
+import '../../styles/pages/dashboard.css';
 
 const PetOwners = () => {
+  const [owners, setOwners] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchOwners = async () => {
+      try {
+        // Fetch all users with role = 'user' and join their pets
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('id, full_name, avatar_url, pets(id, name, type)')
+          .eq('role', 'user');
+
+        if (error) throw error;
+        setOwners(data || []);
+      } catch (err) {
+        console.error('Error fetching pet owners:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOwners();
+  }, []);
+
   return (
     <div className="animate-fade-in">
       <div className="dashboard-header flex justify-between items-center hide-mobile">
@@ -10,22 +36,38 @@ const PetOwners = () => {
           <h1 className="dashboard-title">Pet Owners</h1>
           <p className="dashboard-subtitle">Manage client information and contacts</p>
         </div>
-        <Button>Add Owner</Button>
       </div>
 
       <div className="section-card animate-slide-up">
-        <div className="appointment-card mt-4">
-          <div className="flex items-center gap-4">
-            <div className="appointment-icon-wrapper">
-              <UserCheck size={24} />
-            </div>
-            <div>
-              <h4 style={{ fontWeight: 600 }}>Jane Smith</h4>
-              <p className="text-muted" style={{ fontSize: '0.875rem' }}>Pets: Bella (Dog) • 2 Active Appointments</p>
-            </div>
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+            <Loader2 className="animate-spin" size={28} color="var(--primary)" />
           </div>
-          <Button variant="outline" size="small">View Profile</Button>
-        </div>
+        ) : owners.length === 0 ? (
+          <p style={{ color: 'var(--text-muted)', padding: '1rem 0' }}>No pet owners registered yet.</p>
+        ) : (
+          <div className="flex flex-col gap-3" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {owners.map(owner => {
+              const petList = owner.pets?.map(p => `${p.name} (${p.type})`).join(', ') || 'No pets';
+              return (
+                <div key={owner.id} className="appointment-card">
+                  <div className="flex items-center gap-4" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div className="appointment-icon-wrapper">
+                      <UserCheck size={24} />
+                    </div>
+                    <div>
+                      <h4 style={{ fontWeight: 600 }}>{owner.full_name || 'Unknown'}</h4>
+                      <p className="text-muted" style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                        Pets: {petList} • {owner.pets?.length || 0} registered
+                      </p>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="small">View Profile</Button>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

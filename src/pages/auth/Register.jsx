@@ -1,19 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { PawPrint, User, Stethoscope } from 'lucide-react';
-import { useAppContext } from '../../core/context/AppContext';
+import { PawPrint, User, Stethoscope, Loader2 } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 import Button from '../../components/ui/Button';
+import toast from 'react-hot-toast';
 import '../../styles/pages/auth.css';
 
 const Register = () => {
   const [role, setRole] = useState('user');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  
   const navigate = useNavigate();
-  const { login } = useAppContext();
+  const { signup, user, profile } = useAuth();
 
-  const handleRegister = (e) => {
+  useEffect(() => {
+    if (user && profile) {
+      navigate(profile.role === 'doctor' ? '/doctor-dashboard' : '/dashboard');
+    }
+  }, [user, profile, navigate]);
+
+  const handleRegister = async (e) => {
     e.preventDefault();
-    login(role, { firstName: 'New', lastName: 'User', email: 'new@example.com' });
-    navigate(`/${role}-dashboard`);
+    setIsLoading(true);
+    try {
+      const fullName = `${firstName} ${lastName}`.trim();
+      await signup(email, password, fullName, role);
+      toast.success('Account created successfully! Welcome to Animora.');
+      // Navigation handled by useEffect when profile loads
+    } catch (error) {
+      toast.error(error.message || 'Failed to create account');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -62,30 +84,55 @@ const Register = () => {
             <div className="flex gap-3">
               <div className="form-group" style={{ flex: 1 }}>
                 <label className="form-label">First Name</label>
-                <input type="text" required className="form-input" placeholder="First" />
+                <input 
+                  type="text" 
+                  required 
+                  className="form-input" 
+                  placeholder="First" 
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
               </div>
               <div className="form-group" style={{ flex: 1 }}>
                 <label className="form-label">Last Name</label>
-                <input type="text" required className="form-input" placeholder="Last" />
+                <input 
+                  type="text" 
+                  required 
+                  className="form-input" 
+                  placeholder="Last" 
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
               </div>
             </div>
 
             <div className="form-group">
               <label className="form-label">Email Address</label>
-              <input type="email" required className="form-input" placeholder="Enter your email" />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Phone Number</label>
-              <input type="tel" required className="form-input" placeholder="Phone Number" />
+              <input 
+                type="email" 
+                required 
+                className="form-input" 
+                placeholder="Enter your email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
 
             <div className="form-group">
               <label className="form-label">Password</label>
-              <input type="password" required className="form-input" placeholder="Create password" />
+              <input 
+                type="password" 
+                required 
+                className="form-input" 
+                placeholder="Create password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
 
-            <Button type="submit" className="w-full mt-2">Sign Up</Button>
+            <Button type="submit" className="w-full mt-2" disabled={isLoading}>
+              {isLoading ? <Loader2 className="animate-spin" size={20} /> : 'Sign Up'}
+            </Button>
           </form>
 
           <div className="auth-footer" style={{ marginTop: '1rem' }}>

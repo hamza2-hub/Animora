@@ -1,13 +1,22 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Menu, Search, Bell, Plus, User, Settings, LogOut, X } from 'lucide-react';
-import { useAppContext } from '../../core/context/AppContext';
+import { useAuth } from '../../hooks/useAuth';
 import Button from '../ui/Button';
 import SettingsModal from '../ui/SettingsModal';
 import { toast } from 'react-hot-toast';
 import '../../styles/layout/layout.css';
 
 const Navbar = ({ toggleSidebar }) => {
-  const { user, userRole, logout } = useAppContext();
+  const { user, profile, logout } = useAuth();
+  const userRole = profile?.role || 'user';
+  const fullName = profile?.full_name || 'User';
+  
+  const settingsUser = {
+    firstName: fullName.split(' ')[0],
+    lastName: fullName.split(' ').slice(1).join(' '),
+    email: user?.email || '',
+  };
+  
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -54,11 +63,11 @@ const Navbar = ({ toggleSidebar }) => {
             onClick={() => setIsProfileOpen(!isProfileOpen)}
           >
             <div className="profile-info text-right hide-mobile">
-              <p className="profile-name">{user?.firstName || 'John'} {user?.lastName || 'Doe'}</p>
+              <p className="profile-name">{fullName}</p>
               <p className="profile-role text-muted text-sm capitalize">{userRole}</p>
             </div>
             <div className="avatar">
-              {user?.firstName?.charAt(0) || 'J'}
+              {fullName.charAt(0)}
             </div>
           </div>
 
@@ -126,7 +135,7 @@ const Navbar = ({ toggleSidebar }) => {
         isOpen={isSettingsModalOpen} 
         onClose={() => setIsSettingsModalOpen(false)} 
         initialTab={settingsTab}
-        user={user}
+        user={settingsUser}
       />
     </header>
   );

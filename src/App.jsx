@@ -1,14 +1,14 @@
 import React from 'react';
 import AppRouter from './core/router/AppRouter';
-import { AppProvider } from './core/context/AppContext';
+import { AuthProvider } from './context/AuthContext';
 import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
-    <AppProvider>
+    <AuthProvider>
       <Toaster position="top-right" />
       <AppRouter />
-    </AppProvider>
+    </AuthProvider>
   );
 }
 

@@ -11,10 +11,13 @@ const Skeleton = ({ className = '', style = {} }) => {
 };
 
 export const SkeletonCard = () => (
-  <div className="card h-full flex-col justify-center">
-    <Skeleton className="w-full mb-4" style={{ height: '140px', borderRadius: 'var(--border-radius-md)' }} />
-    <Skeleton className="mb-2" style={{ height: '24px', width: '80%' }} />
-    <Skeleton style={{ height: '16px', width: '60%' }} />
+  <div className="pet-card-skeleton">
+    <div className="skeleton-pulse skeleton-img" />
+    <div className="skeleton-body">
+      <div className="skeleton-pulse skeleton-line-lg" />
+      <div className="skeleton-pulse skeleton-line-md" />
+      <div className="skeleton-pulse skeleton-line-sm" />
+    </div>
   </div>
 );
 

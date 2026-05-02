@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useAppContext } from '../context/AppContext';
+import { useAuth } from '../../hooks/useAuth';
 
 import Login from '../../pages/auth/Login';
 import Register from '../../pages/auth/Register';
@@ -17,15 +17,23 @@ import MyPets from '../../pages/user/MyPets';
 import Appointments from '../../pages/user/Appointments';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 
+const getDashboardPath = (role) => {
+  return role === 'doctor' ? '/doctor-dashboard' : '/dashboard';
+};
+
 const ProtectedRoute = ({ children, allowedRole }) => {
-  const { userRole } = useAppContext();
+  const { user, profile, loading } = useAuth();
   
-  if (!userRole) {
+  if (loading) {
+    return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  }
+
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
   
-  if (allowedRole && userRole !== allowedRole) {
-    return <Navigate to={`/${userRole}-dashboard`} replace />;
+  if (allowedRole && profile?.role && profile.role !== allowedRole) {
+    return <Navigate to={getDashboardPath(profile.role)} replace />;
   }
   
   return (
@@ -51,9 +59,10 @@ const PageTransition = ({ children }) => {
 };
 
 const CatchAll = () => {
-  const { userRole } = useAppContext();
-  if (userRole) {
-    return <Navigate to={`/${userRole}-dashboard`} replace />;
+  const { user, profile, loading } = useAuth();
+  if (loading) return null;
+  if (user && profile?.role) {
+    return <Navigate to={getDashboardPath(profile.role)} replace />;
   }
   return <Navigate to="/login" replace />;
 };
@@ -64,7 +73,7 @@ const AnimatedRoutes = () => {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<CatchAll />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         
@@ -126,7 +135,7 @@ const AnimatedRoutes = () => {
         />
         
         <Route 
-          path="/user-dashboard" 
+          path="/dashboard" 
           element={
             <ProtectedRoute allowedRole="user">
               <UserDashboard />
@@ -134,7 +143,7 @@ const AnimatedRoutes = () => {
           } 
         />
         <Route 
-          path="/user-dashboard/pets" 
+          path="/dashboard/pets" 
           element={
             <ProtectedRoute allowedRole="user">
               <MyPets />
@@ -142,7 +151,7 @@ const AnimatedRoutes = () => {
           } 
         />
         <Route 
-          path="/user-dashboard/appointments" 
+          path="/dashboard/appointments" 
           element={
             <ProtectedRoute allowedRole="user">
               <Appointments />

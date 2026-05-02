@@ -8,18 +8,22 @@ import Button from '../../components/ui/Button';
 import PetCard from '../../components/ui/PetCard';
 import { SkeletonStat, SkeletonCard } from '../../components/ui/Skeleton';
 import { toast } from 'react-hot-toast';
-import { mockStats, mockSchedule, mockPatients } from '../../data/mockData';
+import { useDoctorDashboard } from '../../hooks/useDoctorDashboard';
+import { useAuth } from '../../hooks/useAuth';
 import '../../styles/pages/dashboard.css';
+
+const getScheduleStatus = (appointment) => {
+  if (appointment.status === 'completed') return 'completed';
+  if (appointment.pets?.status === 'emergency' || appointment.status === 'urgent') return 'urgent';
+  return 'upcoming';
+};
 
 const DoctorDashboard = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generateSuccess, setGenerateSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
-  React.useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1200);
-    return () => clearTimeout(timer);
-  }, []);
+  const { profile } = useAuth();
+  const { stats, todaySchedule, recentPatients, loading: isLoading } = useDoctorDashboard();
 
   const handleGenerateReport = () => {
     setIsGenerating(true);
@@ -27,7 +31,7 @@ const DoctorDashboard = () => {
       setIsGenerating(false);
       setGenerateSuccess(true);
       toast.success('Report generated successfully!');
-      setTimeout(() => setGenerateSuccess(false), 3000); // Reset after 3 seconds
+      setTimeout(() => setGenerateSuccess(false), 3000);
     }, 2000);
   };
 
@@ -35,12 +39,8 @@ const DoctorDashboard = () => {
     <div className="animate-fade-in">
       <div className="dashboard-header flex justify-between items-center hide-mobile">
         <div>
-          <h1 className="dashboard-title capitalize">
-            Dashboard Overview
-          </h1>
-          <p className="dashboard-subtitle">
-            Welcome back, Dr. John
-          </p>
+          <h1 className="dashboard-title capitalize">Dashboard Overview</h1>
+          <p className="dashboard-subtitle">Welcome back, Dr. {profile?.full_name || 'Doctor'}</p>
         </div>
         <Button 
           onClick={handleGenerateReport} 
@@ -62,6 +62,7 @@ const DoctorDashboard = () => {
         </Button>
       </div>
 
+      {/* Stats Grid */}
       <div className="stats-grid">
         {isLoading ? (
           <>
@@ -74,28 +75,28 @@ const DoctorDashboard = () => {
           <>
             <StatCard 
               title="Active Patients" 
-              value={mockStats.totalPatients} 
+              value={stats.patientsCount} 
               icon={Users} 
               trend={{ positive: true, value: 12 }} 
               colorClass="primary"
             />
             <StatCard 
               title="Appointments Today" 
-              value={mockStats.todayAppointments} 
+              value={stats.todayAppointmentsCount} 
               icon={CalendarIcon} 
               trend={{ positive: true, value: 5 }} 
               colorClass="primary"
             />
             <StatCard 
               title="Vaccination Rate" 
-              value={`${mockStats.vaccinationRate}%`} 
+              value="—" 
               icon={Syringe} 
               trend={{ positive: true, value: 2 }} 
               colorClass="primary"
             />
             <StatCard 
               title="Emergency Cases" 
-              value={mockStats.emergencies} 
+              value={stats.emergencyCount} 
               icon={Activity} 
               trend={{ positive: false, value: 1 }} 
               colorClass="emergency"
@@ -106,7 +107,7 @@ const DoctorDashboard = () => {
 
       <div className="dashboard-grid">
         <div className="grid-left">
-          {/* Timeline Schedule */}
+          {/* Today's Schedule */}
           <div className="section-card animate-slide-up" style={{ animationDelay: '0.1s' }}>
             <div className="section-header">
               <h2 className="section-title">Today's Schedule</h2>
@@ -117,21 +118,31 @@ const DoctorDashboard = () => {
                 <div style={{ height: '50px', background: 'var(--border)', borderRadius: '8px', opacity: 0.5 }} className="skeleton" />
                 <div style={{ height: '50px', background: 'var(--border)', borderRadius: '8px', opacity: 0.5 }} className="skeleton" />
               </div>
+            ) : todaySchedule.length === 0 ? (
+              <p style={{ color: 'var(--text-muted)', padding: '1rem 0', fontSize: '0.9rem' }}>
+                No appointments scheduled for today.
+              </p>
             ) : (
               <div className="timeline">
-                {mockSchedule.map((item, idx) => (
-                  <div key={item.id} className="timeline-item">
-                    <div className="timeline-time">{item.time}</div>
-                    <div className="timeline-dot"><Clock size={20} /></div>
-                    <div className="timeline-content relative">
-                      <h3 className="timeline-patient">{item.patient}</h3>
-                      <p className="timeline-reason">{item.reason}</p>
-                      <span className={`timeline-status status-${item.status}`}>
-                        {item.status}
-                      </span>
+                {todaySchedule.map((item) => {
+                  const schedStatus = getScheduleStatus(item);
+                  const timeStr = new Date(item.date).toLocaleTimeString('en-US', {
+                    hour: '2-digit', minute: '2-digit'
+                  });
+                  return (
+                    <div key={item.id} className="timeline-item">
+                      <div className="timeline-time">{timeStr}</div>
+                      <div className="timeline-dot"><Clock size={20} /></div>
+                      <div className="timeline-content relative">
+                        <h3 className="timeline-patient">{item.pets?.name || 'Unknown Pet'}</h3>
+                        <p className="timeline-reason">{item.notes || item.pets?.type || 'General Visit'}</p>
+                        <span className={`timeline-status status-${schedStatus}`}>
+                          {schedStatus}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -149,9 +160,21 @@ const DoctorDashboard = () => {
                   <SkeletonCard />
                   <SkeletonCard />
                 </>
+              ) : recentPatients.length === 0 ? (
+                <p>No patients found.</p>
               ) : (
-                mockPatients.slice(0, 3).map(pet => (
-                  <PetCard key={pet.id} name={pet.name} type={pet.type} age={pet.breed || pet.age} status={pet.status} image={pet.image} />
+                recentPatients.map(pet => (
+                  <PetCard 
+                    key={pet.id} 
+                    name={pet.name} 
+                    type={pet.type} 
+                    breed={pet.breed}
+                    age={pet.age} 
+                    status={pet.status} 
+                    image={pet.image_url} 
+                    ownerName={pet.profiles?.full_name}
+                    createdAt={pet.created_at}
+                  />
                 ))
               )}
             </div>
@@ -159,7 +182,7 @@ const DoctorDashboard = () => {
         </div>
 
         <div className="grid-right">
-          {/* Low Stock Alert */}
+          {/* Inventory Alerts */}
           <div className="section-card animate-slide-up" style={{ animationDelay: '0.3s' }}>
             <h2 className="section-title mb-4">Inventory Alerts</h2>
             <div className="alert-box">
@@ -172,7 +195,7 @@ const DoctorDashboard = () => {
             </div>
           </div>
 
-          {/* Progress Charts Placeholder */}
+          {/* Treatment Progress */}
           <div className="section-card animate-slide-up" style={{ animationDelay: '0.4s' }}>
             <h2 className="section-title">Treatment Progress</h2>
             <div className="donut-chart-container">
@@ -185,6 +208,7 @@ const DoctorDashboard = () => {
             </div>
           </div>
 
+          {/* Patient Stats Bar Chart */}
           <div className="section-card animate-slide-up" style={{ animationDelay: '0.5s' }}>
             <h2 className="section-title">Patient Stats</h2>
             <div className="bar-chart">
