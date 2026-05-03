@@ -35,7 +35,11 @@ export const appointmentService = {
 
     const { data, error } = await supabase
       .from('appointments')
-      .insert([{ ...appointmentData, owner_id: user.id }])
+      .insert([{ 
+        ...appointmentData, 
+        owner_id: user.id,
+        files: appointmentData.files || [],
+      }])
       .select()
       .single();
 

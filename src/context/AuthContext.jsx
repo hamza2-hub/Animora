@@ -10,23 +10,21 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        fetchProfile(session.user.id);
+        fetchProfile(session.user);
       } else {
         setLoading(false);
       }
     });
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        fetchProfile(session.user.id);
+        fetchProfile(session.user);
       } else {
         setProfile(null);
         setLoading(false);
@@ -36,31 +34,44 @@ export const AuthProvider = ({ children }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const fetchProfile = async (userId) => {
+  const ensureProfile = async (authUser) => {
+    // Always upsert the profile row so pets/appointments FK never breaks
+    const { error } = await supabase.from('profiles').upsert(
+      {
+        id: authUser.id,
+        full_name: authUser.user_metadata?.full_name || authUser.email?.split('@')[0] || 'User',
+        role: authUser.user_metadata?.role || 'user',
+        avatar_url: authUser.user_metadata?.avatar_url || null,
+      },
+      { onConflict: 'id', ignoreDuplicates: true }
+    );
+    if (error) {
+      console.warn('Profile upsert warning (non-fatal):', error.message);
+    }
+  };
+
+  const fetchProfile = async (authUser) => {
     try {
+      // First ensure the profile row exists
+      await ensureProfile(authUser);
+
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', userId)
+        .eq('id', authUser.id)
         .single();
-        
+
       if (error) throw error;
       setProfile(data);
     } catch (error) {
-      console.error('Error fetching profile (might be missing in DB or RLS error):', error);
-      
-      // Fallback to auth metadata if the profiles row doesn't exist yet
-      // This happens if the SQL trigger wasn't run on the Supabase Dashboard
-      const { data: sessionData } = await supabase.auth.getSession();
-      const currentUser = sessionData?.session?.user;
-      
-      if (currentUser) {
-        setProfile({
-          id: currentUser.id,
-          role: currentUser.user_metadata?.role || 'user',
-          full_name: currentUser.user_metadata?.full_name || currentUser.email.split('@')[0],
-        });
-      }
+      console.error('Error fetching profile:', error);
+      // Fallback: use auth metadata so the UI still works
+      setProfile({
+        id: authUser.id,
+        role: authUser.user_metadata?.role || 'user',
+        full_name: authUser.user_metadata?.full_name || authUser.email?.split('@')[0] || 'User',
+        avatar_url: authUser.user_metadata?.avatar_url || null,
+      });
     } finally {
       setLoading(false);
     }
@@ -76,12 +87,7 @@ export const AuthProvider = ({ children }) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: {
-          full_name: fullName,
-          role: role
-        }
-      }
+      options: { data: { full_name: fullName, role } }
     });
     if (error) throw error;
     return data;

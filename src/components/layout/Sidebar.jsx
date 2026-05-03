@@ -4,7 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { 
   LayoutDashboard, Calendar, Users, 
   UserCheck, Syringe, FileText, 
-  BarChart2, Menu, X, PawPrint, LogOut 
+  BarChart2, Menu, X, PawPrint, LogOut, Search, UserCircle
 } from 'lucide-react';
 import '../../styles/layout/layout.css';
 
@@ -16,12 +16,14 @@ const doctorLinks = [
   { path: '/doctor-dashboard/vaccinations', label: 'Vaccinations', icon: Syringe },
   { path: '/doctor-dashboard/records', label: 'Medical Records', icon: FileText },
   { path: '/doctor-dashboard/analytics', label: 'Analytics', icon: BarChart2 },
+  { path: '/doctor-dashboard/profile', label: 'My Profile', icon: UserCircle },
 ];
 
 const userLinks = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { path: '/dashboard/pets', label: 'My Pets', icon: PawPrint },
   { path: '/dashboard/appointments', label: 'Appointments', icon: Calendar },
+  { path: '/dashboard/doctors', label: 'Find a Doctor', icon: Search },
 ];
 
 const Sidebar = ({ isCollapsed, toggleSidebar }) => {

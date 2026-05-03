@@ -10,7 +10,9 @@ export const usePets = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
+      // Refresh session to ensure auth token is current
+      await supabase.auth.refreshSession();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         setPets([]);

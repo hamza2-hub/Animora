@@ -6,6 +6,10 @@ CREATE TABLE public.profiles (
   full_name TEXT,
   role TEXT CHECK (role IN ('user', 'doctor')) DEFAULT 'user',
   avatar_url TEXT,
+  specialty TEXT,
+  bio TEXT,
+  experience_years INTEGER,
+  clinic_address TEXT,
   created_at TIMESTAMPTZ DEFAULT now() NOT NULL
 );
 

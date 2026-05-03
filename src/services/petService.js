@@ -19,15 +19,17 @@ export const petService = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Not authenticated');
 
-    // Failsafe: Ensure profile exists to prevent Foreign Key constraint errors
-    const { data: profile } = await supabase.from('profiles').select('id').eq('id', user.id).single();
-    if (!profile) {
-      console.warn('Profile missing. Attempting to create profile to satisfy foreign key constraint...');
-      await supabase.from('profiles').insert([{
-        id: user.id,
-        full_name: user.user_metadata?.full_name || user.email.split('@')[0],
-        role: user.user_metadata?.role || 'user'
-      }]);
+    // Failsafe: Ensure profile exists using upsert (handles both missing and existing profiles)
+    const session = await supabase.auth.getUser();
+    const currentUser = session.data.user;
+    if (currentUser) {
+      await supabase.from('profiles').upsert([
+        {
+          id: currentUser.id,
+          full_name: currentUser.user_metadata?.full_name || currentUser.email.split('@')[0],
+          role: currentUser.user_metadata?.role || 'user',
+        }
+      ], { onConflict: 'id', ignoreDuplicates: true });
     }
 
     // Parse age to integer to prevent Postgres type errors

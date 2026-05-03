@@ -9,6 +9,7 @@ export const useDoctorDashboard = () => {
     emergencyCount: 0,
   });
   const [todaySchedule, setTodaySchedule] = useState([]);
+  const [previousAppointments, setPreviousAppointments] = useState([]);
   const [recentPatients, setRecentPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,7 +25,7 @@ export const useDoctorDashboard = () => {
       todayEnd.setHours(23, 59, 59, 999);
 
       // Fetch all in parallel
-      const [petsRes, todayAppRes, emergencyRes, scheduleRes] = await Promise.all([
+      const [petsRes, todayAppRes, emergencyRes, scheduleRes, prevRes] = await Promise.all([
         // All pets (patient count + recent patients)
         supabase
           .from('pets')
@@ -51,6 +52,14 @@ export const useDoctorDashboard = () => {
           .gte('date', todayStart.toISOString())
           .lte('date', todayEnd.toISOString())
           .order('date', { ascending: true }),
+
+        // Previous appointments (before today, most recent first)
+        supabase
+          .from('appointments')
+          .select('*, pets(name, type), owner:profiles!owner_id(full_name)')
+          .lt('date', todayStart.toISOString())
+          .order('date', { ascending: false })
+          .limit(20),
       ]);
 
       // Check errors
@@ -58,6 +67,7 @@ export const useDoctorDashboard = () => {
       if (todayAppRes.error) throw todayAppRes.error;
       if (emergencyRes.error) throw emergencyRes.error;
       if (scheduleRes.error) throw scheduleRes.error;
+      if (prevRes.error) throw prevRes.error;
 
       setStats({
         patientsCount: petsRes.data?.length ?? 0,
@@ -67,6 +77,7 @@ export const useDoctorDashboard = () => {
 
       setRecentPatients(petsRes.data?.slice(0, 5) ?? []);
       setTodaySchedule(scheduleRes.data ?? []);
+      setPreviousAppointments(prevRes.data ?? []);
       setError(null);
     } catch (err) {
       console.error('Doctor Dashboard Error:', err);
@@ -97,5 +108,5 @@ export const useDoctorDashboard = () => {
     };
   }, []);
 
-  return { stats, todaySchedule, recentPatients, loading, error };
+  return { stats, todaySchedule, previousAppointments, recentPatients, loading, error };
 };

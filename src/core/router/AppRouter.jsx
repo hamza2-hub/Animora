@@ -12,9 +12,11 @@ import PetOwners from '../../pages/doctor/PetOwners';
 import Vaccinations from '../../pages/doctor/Vaccinations';
 import MedicalRecords from '../../pages/doctor/MedicalRecords';
 import Analytics from '../../pages/doctor/Analytics';
+import DoctorProfile from '../../pages/doctor/DoctorProfile';
 import UserDashboard from '../../pages/user/UserDashboard';
 import MyPets from '../../pages/user/MyPets';
 import Appointments from '../../pages/user/Appointments';
+import DoctorsList from '../../pages/user/DoctorsList';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 
 const getDashboardPath = (role) => {
@@ -133,6 +135,14 @@ const AnimatedRoutes = () => {
             </ProtectedRoute>
           } 
         />
+        <Route 
+          path="/doctor-dashboard/profile" 
+          element={
+            <ProtectedRoute allowedRole="doctor">
+              <DoctorProfile />
+            </ProtectedRoute>
+          } 
+        />
         
         <Route 
           path="/dashboard" 
@@ -155,6 +165,14 @@ const AnimatedRoutes = () => {
           element={
             <ProtectedRoute allowedRole="user">
               <Appointments />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/dashboard/doctors" 
+          element={
+            <ProtectedRoute allowedRole="user">
+              <DoctorsList />
             </ProtectedRoute>
           } 
         />
