@@ -29,8 +29,11 @@ CREATE TABLE public.appointments (
   owner_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   doctor_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   date TIMESTAMPTZ NOT NULL,
-  status TEXT CHECK (status IN ('pending', 'confirmed', 'completed', 'cancelled')) DEFAULT 'pending',
+  status TEXT CHECK (status IN ('pending', 'confirmed', 'in_progress', 'completed', 'cancelled')) DEFAULT 'pending',
   notes TEXT,
+  diagnosis TEXT,
+  treatment_details TEXT,
+  updated_at TIMESTAMPTZ DEFAULT now() NOT NULL,
   created_at TIMESTAMPTZ DEFAULT now() NOT NULL
 );
 

@@ -1,29 +1,69 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Calendar } from 'lucide-react';
 import Button from '../../components/ui/Button';
+import StatusBadge from '../../components/ui/StatusBadge';
 import { appointmentService } from '../../services/appointmentService';
+import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../hooks/useAuth';
+import toast from 'react-hot-toast';
 import '../../styles/pages/dashboard.css';
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
+  const appointmentsRef = useRef([]);
+
+  const loadAppointments = async () => {
+    try {
+      const data = await appointmentService.getAppointments();
+      setAppointments(data);
+      appointmentsRef.current = data;
+    } catch (error) {
+      console.error("Failed to load appointments:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function loadAppointments() {
-      try {
-        const data = await appointmentService.getAppointments();
-        setAppointments(data);
-      } catch (error) {
-        console.error("Failed to load appointments:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
     loadAppointments();
-  }, []);
 
-  const upcoming = appointments.filter(a => new Date(a.date) >= new Date());
-  const past = appointments.filter(a => new Date(a.date) < new Date());
+    if (!user) return;
+
+    const subscription = supabase
+      .channel('owner_appointments')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'appointments', filter: `owner_id=eq.${user.id}` },
+        (payload) => {
+          const oldApp = appointmentsRef.current.find(a => a.id === payload.new.id);
+          if (oldApp && oldApp.status !== payload.new.status) {
+            if (payload.new.status === 'in_progress') {
+              toast.success("Your pet's treatment is now in progress");
+            } else if (payload.new.status === 'completed') {
+              toast.success("Treatment completed successfully");
+            } else {
+              toast(`Appointment status updated to ${payload.new.status.replace('_', ' ')}`);
+            }
+          }
+          loadAppointments();
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'appointments', filter: `owner_id=eq.${user.id}` },
+        () => loadAppointments()
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [user]);
+
+  const upcoming = appointments.filter(a => new Date(a.date) >= new Date() && a.status !== 'completed' && a.status !== 'cancelled');
+  const past = appointments.filter(a => new Date(a.date) < new Date() || a.status === 'completed' || a.status === 'cancelled');
 
   return (
     <div className="animate-fade-in">
@@ -45,13 +85,16 @@ const Appointments = () => {
           <p className="mt-4 text-muted">No upcoming appointments.</p>
         ) : (
           upcoming.map(app => (
-            <div key={app.id} className="appointment-card mt-4">
+            <div key={app.id} className="appointment-card mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="appointment-icon-wrapper">
                   <Calendar size={24} />
                 </div>
                 <div>
-                  <h4 style={{ fontWeight: 600 }}>{app.notes || 'Appointment'} - {app.pets?.name}</h4>
+                  <h4 style={{ fontWeight: 600 }} className="flex items-center gap-2">
+                    {app.notes || 'Appointment'} - {app.pets?.name}
+                    <StatusBadge status={app.status} />
+                  </h4>
                   <p className="text-muted" style={{ fontSize: '0.875rem' }}>
                     {new Date(app.date).toLocaleString()} • {app.doctor?.full_name || 'Unassigned'}
                   </p>
@@ -73,13 +116,16 @@ const Appointments = () => {
           <p className="mt-4 text-muted">No past appointments.</p>
         ) : (
           past.map(app => (
-            <div key={app.id} className="appointment-card mt-4" style={{ opacity: 0.7 }}>
+            <div key={app.id} className="appointment-card mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4" style={{ opacity: 0.7 }}>
               <div className="flex items-center gap-4">
                 <div className="appointment-icon-wrapper" style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-muted)' }}>
                   <Calendar size={24} />
                 </div>
                 <div>
-                  <h4 style={{ fontWeight: 600 }}>{app.notes || 'Appointment'} - {app.pets?.name}</h4>
+                  <h4 style={{ fontWeight: 600 }} className="flex items-center gap-2">
+                    {app.notes || 'Appointment'} - {app.pets?.name}
+                    <StatusBadge status={app.status} />
+                  </h4>
                   <p className="text-muted" style={{ fontSize: '0.875rem' }}>
                     {new Date(app.date).toLocaleDateString()} • {app.doctor?.full_name || 'Unassigned'}
                   </p>
