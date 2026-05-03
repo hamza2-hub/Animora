@@ -82,7 +82,7 @@ const DoctorAppointments = () => {
           <p className="text-muted mt-4">No appointments scheduled for today.</p>
         ) : (
           todaysAppointments.map(app => (
-            <div key={app.id} className="appointment-card mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div key={app.id} className="appointment-card mt-4">
               <div className="flex items-center gap-4">
                 <div className="appointment-icon-wrapper">
                   <Calendar size={24} />
@@ -109,7 +109,7 @@ const DoctorAppointments = () => {
         <div className="section-card animate-slide-up mt-6" style={{ animationDelay: '0.1s' }}>
           <h2 className="section-title">Upcoming Appointments</h2>
           {upcomingAppointments.map(app => (
-            <div key={app.id} className="appointment-card mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div key={app.id} className="appointment-card mt-4">
               <div className="flex items-center gap-4">
                 <div className="appointment-icon-wrapper" style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-muted)' }}>
                   <Calendar size={24} />

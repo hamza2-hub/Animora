@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Calendar } from 'lucide-react';
 import Button from '../../components/ui/Button';
 import StatusBadge from '../../components/ui/StatusBadge';
+import AppointmentDetailsModal from '../../components/doctor/AppointmentDetailsModal';
 import { appointmentService } from '../../services/appointmentService';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
@@ -11,6 +12,7 @@ import '../../styles/pages/dashboard.css';
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
   const { user } = useAuth();
   const appointmentsRef = useRef([]);
 
@@ -85,7 +87,7 @@ const Appointments = () => {
           <p className="mt-4 text-muted">No upcoming appointments.</p>
         ) : (
           upcoming.map(app => (
-            <div key={app.id} className="appointment-card mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div key={app.id} className="appointment-card mt-4">
               <div className="flex items-center gap-4">
                 <div className="appointment-icon-wrapper">
                   <Calendar size={24} />
@@ -100,7 +102,7 @@ const Appointments = () => {
                   </p>
                 </div>
               </div>
-              <Button variant="outline" size="small">Reschedule</Button>
+              <Button variant="outline" size="small" onClick={() => setSelectedAppointment(app)}>View Details</Button>
             </div>
           ))
         )}
@@ -116,7 +118,7 @@ const Appointments = () => {
           <p className="mt-4 text-muted">No past appointments.</p>
         ) : (
           past.map(app => (
-            <div key={app.id} className="appointment-card mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4" style={{ opacity: 0.7 }}>
+            <div key={app.id} className="appointment-card mt-4" style={{ opacity: 0.7 }}>
               <div className="flex items-center gap-4">
                 <div className="appointment-icon-wrapper" style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-muted)' }}>
                   <Calendar size={24} />
@@ -131,11 +133,19 @@ const Appointments = () => {
                   </p>
                 </div>
               </div>
-              <Button variant="text" size="small">View Details</Button>
+              <Button variant="text" size="small" onClick={() => setSelectedAppointment(app)}>View Details</Button>
             </div>
           ))
         )}
       </div>
+
+      <AppointmentDetailsModal 
+        isOpen={!!selectedAppointment}
+        onClose={() => setSelectedAppointment(null)}
+        appointment={selectedAppointment}
+        onUpdate={loadAppointments}
+        isOwner={true}
+      />
     </div>
   );
 };
