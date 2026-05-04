@@ -171,6 +171,7 @@
 }
 
 .menu-btn, .notification-btn {
+  position: relative;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -380,4 +381,8 @@
   .search-input { width: 40px; padding-left: 40px; cursor: pointer; }
   .search-input:focus { width: 200px; cursor: text; }
   .content-area { padding: 1rem; }
+}
+
+@media (min-width: 769px) {
+  .hide-desktop { display: none !important; }
 }

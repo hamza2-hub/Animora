@@ -72,9 +72,11 @@ const MyPets = () => {
       <div className="section-card animate-slide-up">
         <div className="section-header">
           <h2 className="section-title">All Pets</h2>
-          <Button onClick={() => setIsModalOpen(true)}>
-            <Plus size={18} className="mr-2" /> Register Pet
-          </Button>
+          {(!isLoading && pets.length > 0) && (
+            <Button onClick={() => setIsModalOpen(true)}>
+              <Plus size={18} className="mr-2" /> Register Pet
+            </Button>
+          )}
         </div>
         {isLoading ? (
           <div className="pets-grid">
@@ -83,12 +85,14 @@ const MyPets = () => {
             <SkeletonCard />
           </div>
         ) : pets.length === 0 ? (
-          <EmptyState 
-            title="No pets yet" 
-            message="You haven't registered any pets yet. Add your first furry friend to get started! 🐾" 
-            actionText="Register Pet"
-            onAction={() => setIsModalOpen(true)}
-          />
+          <div style={{ border: '2px dashed var(--border)', borderRadius: '16px', backgroundColor: '#fafafa', marginTop: '1rem' }}>
+            <EmptyState 
+              title="No pets yet" 
+              message="You haven't registered any pets yet. Add your first furry friend to get started! 🐾" 
+              actionText="Register Pet"
+              onAction={() => setIsModalOpen(true)}
+            />
+          </div>
         ) : (
           <div className="pets-grid">
             {pets.map(pet => (

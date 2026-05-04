@@ -109,5 +109,5 @@ CREATE TRIGGER on_auth_user_created
 -- INSERT INTO storage.buckets (id, name, public) VALUES ('medical-files', 'medical-files', false) ON CONFLICT DO NOTHING;
 
 -- Storage Policies for medical-files
-CREATE POLICY "Anyone can upload medical files" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'medical-files');
+CREATE POLICY "Doctors can upload medical files" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'medical-files' AND (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'doctor')));
 CREATE POLICY "Users can view own medical files" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'medical-files');
