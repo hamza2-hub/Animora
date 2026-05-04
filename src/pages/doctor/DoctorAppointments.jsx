@@ -122,16 +122,37 @@ const AppointmentCard = ({ app, onViewDetails, isPast }) => {
 
 /* ── empty state ───────────────────────────── */
 const EmptyState = ({ tab }) => (
-  <div style={{ textAlign: 'center', padding: '3.5rem 1rem', color: 'var(--text-muted)' }}>
-    <div style={{ width: 60, height: 60, borderRadius: '50%', background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'var(--primary)' }}>
-      {tab === 'previous' ? <History size={28} /> : <CalendarCheck size={28} />}
+  <div style={{ 
+    textAlign: 'center', 
+    padding: '3.5rem 1rem', 
+    color: 'var(--text-muted)',
+    border: '1px solid rgba(255, 255, 255, 0.5)', 
+    borderRadius: '24px', 
+    background: 'linear-gradient(145deg, #ffffff, #f0f4f8)', 
+    boxShadow: '0 10px 40px -10px rgba(0,0,0,0.08), inset 0 0 0 1px rgba(255,255,255,1)',
+    overflow: 'hidden',
+    position: 'relative'
+  }}>
+    <div style={{
+      position: 'absolute',
+      top: '-50%',
+      left: '-50%',
+      width: '200%',
+      height: '200%',
+      background: 'radial-gradient(circle, rgba(16, 185, 129, 0.05) 0%, transparent 60%)',
+      pointerEvents: 'none'
+    }}></div>
+    <div style={{ position: 'relative', zIndex: 1 }}>
+      <div style={{ width: 60, height: 60, borderRadius: '50%', background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'var(--primary)' }}>
+        {tab === 'previous' ? <History size={28} /> : <CalendarCheck size={28} />}
+      </div>
+      <p style={{ fontWeight: 700, fontSize: '1rem', marginBottom: 4, color: 'var(--text-main)' }}>
+        {tab === 'today' ? 'No appointments today' : tab === 'upcoming' ? 'No upcoming appointments' : 'No previous appointments'}
+      </p>
+      <p style={{ fontSize: '0.875rem' }}>
+        {tab === 'today' ? 'Your schedule is clear for today.' : tab === 'upcoming' ? 'Nothing scheduled yet.' : 'Completed visits will appear here.'}
+      </p>
     </div>
-    <p style={{ fontWeight: 700, fontSize: '1rem', marginBottom: 4, color: 'var(--text-main)' }}>
-      {tab === 'today' ? 'No appointments today' : tab === 'upcoming' ? 'No upcoming appointments' : 'No previous appointments'}
-    </p>
-    <p style={{ fontSize: '0.875rem' }}>
-      {tab === 'today' ? 'Your schedule is clear for today.' : tab === 'upcoming' ? 'Nothing scheduled yet.' : 'Completed visits will appear here.'}
-    </p>
   </div>
 );
 

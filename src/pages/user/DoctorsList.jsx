@@ -228,16 +228,36 @@ const DoctorModal = ({ doc, onClose, onBook }) => (
 
 /* ─── Empty state ──────────────────────────── */
 const EmptyState = ({ isFiltered }) => (
-  <div style={{ textAlign: 'center', padding: '5rem 2rem', background: 'var(--surface)', border: '1px dashed var(--border)', borderRadius: 'var(--border-radius-xl)' }}>
-    <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'var(--primary)' }}>
-      <Stethoscope size={32} />
+  <div style={{ 
+    textAlign: 'center', 
+    padding: '5rem 2rem', 
+    border: '1px solid rgba(255, 255, 255, 0.5)', 
+    borderRadius: '24px', 
+    background: 'linear-gradient(145deg, #ffffff, #f0f4f8)', 
+    boxShadow: '0 10px 40px -10px rgba(0,0,0,0.08), inset 0 0 0 1px rgba(255,255,255,1)',
+    overflow: 'hidden',
+    position: 'relative'
+  }}>
+    <div style={{
+      position: 'absolute',
+      top: '-50%',
+      left: '-50%',
+      width: '200%',
+      height: '200%',
+      background: 'radial-gradient(circle, rgba(16, 185, 129, 0.05) 0%, transparent 60%)',
+      pointerEvents: 'none'
+    }}></div>
+    <div style={{ position: 'relative', zIndex: 1 }}>
+      <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'var(--primary)' }}>
+        <Stethoscope size={32} />
+      </div>
+      <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: 8, color: 'var(--text-main)' }}>
+        {isFiltered ? 'No doctors match your search' : 'No doctors available'}
+      </h3>
+      <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+        {isFiltered ? 'Try changing your filter or search term.' : 'Doctors will appear here once they set up their profile.'}
+      </p>
     </div>
-    <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: 8 }}>
-      {isFiltered ? 'No doctors match your search' : 'No doctors available'}
-    </h3>
-    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-      {isFiltered ? 'Try changing your filter or search term.' : 'Doctors will appear here once they set up their profile.'}
-    </p>
   </div>
 );
 
