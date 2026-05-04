@@ -36,7 +36,7 @@ const Navbar = ({ toggleSidebar }) => {
   return (
     <header className="navbar flex items-center justify-between">
       <div className="navbar-left flex items-center gap-4">
-        <button className="menu-btn hover-bg hide-desktop" onClick={toggleSidebar}>
+        <button className="menu-btn hover-bg" onClick={toggleSidebar}>
           <Menu size={24} />
         </button>
         <div className="search-bar-wrapper">

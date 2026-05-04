@@ -96,10 +96,21 @@
   border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
 }
 
+.sidebar.collapsed .sidebar-header {
+  padding: 1.5rem 0;
+  justify-content: center;
+}
+
 .sidebar.collapsed .nav-link {
   justify-content: center;
-  padding: 0.875rem 0;
+  padding: 0.875rem;
+  margin: 0 0.5rem;
   border-left: none;
+  border-radius: var(--border-radius-md);
+}
+
+.sidebar.collapsed .nav-link.active {
+  border-radius: var(--border-radius-md);
 }
 
 .sidebar-footer {

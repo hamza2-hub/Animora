@@ -34,16 +34,13 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
 
   return (
     <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
-      <div className="sidebar-header flex items-center justify-between">
+      <div className="sidebar-header flex items-center justify-center">
         <div className="brand flex items-center gap-2">
           <div className="logo-wrapper">
             <PawPrint className="logo-icon" size={28} />
           </div>
           {!isCollapsed && <h2 className="brand-text animate-fade-in">Animora</h2>}
         </div>
-        <button className="toggle-btn md-hidden" onClick={toggleSidebar}>
-          {isCollapsed ? <Menu size={20} /> : <X size={20} />}
-        </button>
       </div>
 
       <nav className="sidebar-nav">
