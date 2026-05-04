@@ -29,7 +29,7 @@ const Register = () => {
     try {
       const fullName = `${firstName} ${lastName}`.trim();
       await signup(email, password, fullName, role);
-      toast.success('Account created successfully! Welcome to Animora.');
+      toast.success('Account created successfully! Welcome to Vetocare.');
       // Navigation handled by useEffect when profile loads
     } catch (error) {
       toast.error(error.message || 'Failed to create account');

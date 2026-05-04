@@ -85,7 +85,27 @@ const MyPets = () => {
             <SkeletonCard />
           </div>
         ) : pets.length === 0 ? (
-          <div style={{ border: '2px dashed var(--border)', borderRadius: '16px', backgroundColor: '#fafafa', marginTop: '1rem' }}>
+          <div 
+            className="empty-state-container"
+            style={{ 
+              border: '1px solid rgba(255, 255, 255, 0.5)', 
+              borderRadius: '24px', 
+              background: 'linear-gradient(145deg, #ffffff, #f0f4f8)', 
+              marginTop: '1.5rem',
+              boxShadow: '0 10px 40px -10px rgba(0,0,0,0.08), inset 0 0 0 1px rgba(255,255,255,1)',
+              overflow: 'hidden',
+              position: 'relative'
+            }}
+          >
+            <div style={{
+              position: 'absolute',
+              top: '-50%',
+              left: '-50%',
+              width: '200%',
+              height: '200%',
+              background: 'radial-gradient(circle, rgba(16, 185, 129, 0.05) 0%, transparent 60%)',
+              pointerEvents: 'none'
+            }}></div>
             <EmptyState 
               title="No pets yet" 
               message="You haven't registered any pets yet. Add your first furry friend to get started! 🐾" 

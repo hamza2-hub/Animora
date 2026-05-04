@@ -39,7 +39,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
           <div className="logo-wrapper">
             <PawPrint className="logo-icon" size={28} />
           </div>
-          {!isCollapsed && <h2 className="brand-text animate-fade-in">Animora</h2>}
+          {!isCollapsed && <h2 className="brand-text animate-fade-in">Vetocare</h2>}
         </div>
       </div>
 

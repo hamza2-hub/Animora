@@ -45,7 +45,7 @@ const Login = () => {
         />
         <div className="auth-image-overlay">
           <h1 className="auth-quote animate-slide-up">"Providing the best care for your furry friends."</h1>
-          <p className="text-light animate-slide-up" style={{ animationDelay: '0.1s' }}>Join Animora today and experience world-class veterinary service.</p>
+          <p className="text-light animate-slide-up" style={{ animationDelay: '0.1s' }}>Join Vetocare today and experience world-class veterinary service.</p>
         </div>
       </div>
       
@@ -56,7 +56,7 @@ const Login = () => {
               <PawPrint size={36} />
             </div>
             <h2 className="auth-title">Welcome Back</h2>
-            <p className="auth-subtitle">Sign in to your Animora account</p>
+            <p className="auth-subtitle">Sign in to your Vetocare account</p>
           </div>
 
           <form onSubmit={handleLogin}>

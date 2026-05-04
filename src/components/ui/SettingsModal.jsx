@@ -81,7 +81,7 @@ const SettingsModal = ({ isOpen, onClose, initialTab = 'profile', user }) => {
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="settings-flex-col">
             <div>
               <h3 className="font-bold mb-2" style={{ color: 'var(--text-main)', fontSize: '1.25rem' }}>App Preferences</h3>
-              <p className="text-muted text-sm">Customize how Animora looks and feels.</p>
+              <p className="text-muted text-sm">Customize how Vetocare looks and feels.</p>
             </div>
             
             <div className="settings-card">
