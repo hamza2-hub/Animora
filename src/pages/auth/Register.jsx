@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { PawPrint, User, Stethoscope, Loader2 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import Button from '../../components/ui/Button';
+import Button from '../../components/common/Button';
 import toast from 'react-hot-toast';
 import '../../styles/pages/auth.css';
 
@@ -42,7 +42,7 @@ const Register = () => {
     <div className="auth-container">
       <div className="auth-image-panel">
         <img 
-          src="https://images.unsplash.com/photo-1544568100-847a9ec5c583?auto=format&fit=crop&q=80&w=1200" 
+          src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=1200" 
           alt="Cute dog and cat" 
           className="auth-image"
         />

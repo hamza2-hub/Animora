@@ -3,8 +3,9 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth';
 
-import Login from '../../pages/auth/Login';
+import Landing from '../../pages/Landing';
 import Register from '../../pages/auth/Register';
+import Login from '../../pages/auth/Login';
 import DoctorDashboard from '../../pages/doctor/DoctorDashboard';
 import DoctorAppointments from '../../pages/doctor/DoctorAppointments';
 import Patients from '../../pages/doctor/Patients';
@@ -17,7 +18,7 @@ import UserDashboard from '../../pages/user/UserDashboard';
 import MyPets from '../../pages/user/MyPets';
 import Appointments from '../../pages/user/Appointments';
 import DoctorsList from '../../pages/user/DoctorsList';
-import DashboardLayout from '../../components/layout/DashboardLayout';
+import DashboardLayout from '../../layouts/DashboardLayout';
 
 const getDashboardPath = (role) => {
   return role === 'doctor' ? '/doctor-dashboard' : '/dashboard';
@@ -75,7 +76,8 @@ const AnimatedRoutes = () => {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<CatchAll />} />
+        <Route path="/" element={<Landing />} />
+        <Route path="/auth-redirect" element={<CatchAll />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         

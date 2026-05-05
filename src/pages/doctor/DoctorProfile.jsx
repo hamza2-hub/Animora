@@ -4,7 +4,7 @@ import {
   Save, User, Stethoscope, Clock, MapPin,
   AlignLeft, Loader2, CheckCircle, Edit3, Award
 } from 'lucide-react';
-import Button from '../../components/ui/Button';
+import Button from '../../components/common/Button';
 import { profileService } from '../../services/profileService';
 import { useAuth } from '../../hooks/useAuth';
 import { toast } from 'react-hot-toast';

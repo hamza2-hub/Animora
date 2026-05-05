@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Plus, X, Loader2, Trash2 } from 'lucide-react';
-import Button from '../../components/ui/Button';
-import PetCard from '../../components/ui/PetCard';
-import EmptyState from '../../components/ui/EmptyState';
+import Button from '../../components/common/Button';
+import PetCard from '../../components/common/PetCard';
+import EmptyState from '../../components/common/EmptyState';
 import { usePets } from '../../hooks/usePets';
-import { SkeletonCard } from '../../components/ui/Skeleton';
+import { SkeletonCard } from '../../components/common/Skeleton';
 import { petService } from '../../services/petService';
 import { toast } from 'react-hot-toast';
 import '../../styles/pages/dashboard.css';

@@ -204,20 +204,11 @@
   position: absolute;
   top: 4px;
   right: 6px;
-  width: 18px;
-  height: 18px;
+  width: 10px;
+  height: 10px;
   background-color: var(--emergency);
   border-radius: 50%;
   border: 2px solid var(--surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 0.6rem;
-  font-weight: bold;
-}
-.notification-dot::after {
-  content: '2';
 }
 
 .profile-wrapper {

@@ -1,12 +1,12 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth';
 import { 
   LayoutDashboard, Calendar, Users, 
   UserCheck, Syringe, FileText, 
   BarChart2, Menu, X, PawPrint, LogOut, Search, UserCircle
 } from 'lucide-react';
-import '../../styles/layout/layout.css';
+import '../styles/layout/layout.css';
 
 const doctorLinks = [
   { path: '/doctor-dashboard', label: 'Dashboard', icon: LayoutDashboard, end: true },

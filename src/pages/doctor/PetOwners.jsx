@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { UserCheck, Loader2 } from 'lucide-react';
-import Button from '../../components/ui/Button';
+import Button from '../../components/common/Button';
 import { supabase } from '../../lib/supabase';
 import '../../styles/pages/dashboard.css';
 

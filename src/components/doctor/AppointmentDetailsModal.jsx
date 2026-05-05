@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { X, Save, FileText, Download, File as FileIcon, Image as ImageIcon, Loader2 } from 'lucide-react';
-import Button from '../ui/Button';
-import StatusBadge from '../ui/StatusBadge';
-import FileUpload from '../ui/FileUpload';
+import Button from '../common/Button';
+import StatusBadge from '../common/StatusBadge';
+import FileUpload from '../common/FileUpload';
 import { supabase } from '../../lib/supabase';
 import toast from 'react-hot-toast';
 

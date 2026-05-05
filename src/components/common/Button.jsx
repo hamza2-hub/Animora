@@ -3,10 +3,18 @@ import { motion } from 'framer-motion';
 import '../../styles/components/ui.css';
 
 const Button = ({ children, variant = 'primary', className = '', isLoading = false, ...props }) => {
+  const variants = {
+    primary: 'bg-primary text-white shadow-lg hover:bg-primary-dark shadow-primary/20',
+    outline: 'border-2 border-primary text-primary hover:bg-primary-light/10',
+    secondary: 'bg-zinc-100 text-zinc-900 hover:bg-zinc-200',
+    danger: 'bg-red-600 text-white hover:bg-red-700',
+    ghost: 'text-zinc-600 hover:bg-zinc-100',
+  };
+
   return (
     <motion.button 
-      className={`custom-btn btn-${variant} ${className} ${isLoading ? 'loading' : ''}`}
-      whileHover={!isLoading && !props.disabled ? { scale: 1.02, y: -1 } : {}}
+      className={`px-6 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${variants[variant] || variants.primary} ${className}`}
+      whileHover={!isLoading && !props.disabled ? { scale: 1.01, y: -1 } : {}}
       whileTap={!isLoading && !props.disabled ? { scale: 0.97 } : {}}
       disabled={isLoading || props.disabled}
       {...props}

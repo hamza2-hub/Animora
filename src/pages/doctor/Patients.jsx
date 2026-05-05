@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, X, Cat, Dog, Bird, HelpCircle, User, ChevronRight, ShieldCheck, Activity, Heart, Clock } from 'lucide-react';
 import { usePatients } from '../../hooks/usePatients';
-import { SkeletonCard } from '../../components/ui/Skeleton';
+import { SkeletonCard } from '../../components/common/Skeleton';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/pages/dashboard.css';
 

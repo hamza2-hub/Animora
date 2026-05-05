@@ -5,7 +5,7 @@ import {
   Calendar, Stethoscope, Plus, Loader2, ShieldCheck, Activity, Heart,
   ChevronRight, Clock, Pill
 } from 'lucide-react';
-import Button from '../../components/ui/Button';
+import Button from '../../components/common/Button';
 import { medicalService } from '../../services/medicalService';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-hot-toast';

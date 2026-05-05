@@ -4,7 +4,7 @@ import {
   Search, MapPin, Star, Clock, Stethoscope,
   X, Calendar as CalendarIcon, Award, ChevronRight, User
 } from 'lucide-react';
-import Button from '../../components/ui/Button';
+import Button from '../../components/common/Button';
 import { profileService } from '../../services/profileService';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/pages/dashboard.css';

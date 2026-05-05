@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { PawPrint, Loader2, User, Stethoscope } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import Button from '../../components/ui/Button';
+import Button from '../../components/common/Button';
 import toast from 'react-hot-toast';
 import '../../styles/pages/auth.css';
 

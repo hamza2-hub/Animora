@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Plus, FileText, X, Loader2, Paperclip, UploadCloud, Trash2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, FileText, X, Loader2, Paperclip } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Button from '../../components/ui/Button';
-import PetCard from '../../components/ui/PetCard';
-import { SkeletonCard } from '../../components/ui/Skeleton';
+import Button from '../../components/common/Button';
+import PetCard from '../../components/common/PetCard';
+import { SkeletonCard } from '../../components/common/Skeleton';
+import FileAttachZone from '../../components/common/FileAttachZone';
 import { usePets } from '../../hooks/usePets';
 import { useAppointments } from '../../hooks/useAppointments';
 import { appointmentService } from '../../services/appointmentService';
@@ -11,67 +12,6 @@ import { supabase } from '../../lib/supabase';
 import { toast } from 'react-hot-toast';
 import '../../styles/pages/dashboard.css';
 
-/* ── File Attachment Zone ──────────────────── */
-const FileAttachZone = ({ files, onAdd, onRemove }) => {
-  const inputRef = useRef(null);
-  const [dragging, setDragging] = useState(false);
-
-  const handleFiles = (newFiles) => {
-    const valid = Array.from(newFiles).filter(f => {
-      if (f.size > 10 * 1024 * 1024) { toast.error(`${f.name} is too large (max 10 MB)`); return false; }
-      return true;
-    });
-    onAdd(valid);
-  };
-
-  return (
-    <div>
-      {/* Drop zone */}
-      <div
-        onClick={() => inputRef.current?.click()}
-        onDragOver={e => { e.preventDefault(); setDragging(true); }}
-        onDragLeave={() => setDragging(false)}
-        onDrop={e => { e.preventDefault(); setDragging(false); handleFiles(e.dataTransfer.files); }}
-        style={{
-          border: `2px dashed ${dragging ? 'var(--primary)' : 'var(--border)'}`,
-          borderRadius: 'var(--border-radius-md)',
-          background: dragging ? 'var(--primary-light)' : '#f8fafc',
-          padding: '1.25rem',
-          textAlign: 'center',
-          cursor: 'pointer',
-          transition: 'all 0.2s',
-        }}
-      >
-        <UploadCloud size={28} style={{ color: dragging ? 'var(--primary)' : '#94a3b8', margin: '0 auto 6px', display: 'block' }} />
-        <p style={{ fontSize: '0.82rem', fontWeight: 600, color: dragging ? 'var(--primary-dark)' : '#475569' }}>
-          Click or drag files here
-        </p>
-        <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2 }}>
-          Images, PDFs, X-rays — max 10 MB each
-        </p>
-        <input ref={inputRef} type="file" multiple accept="image/*,.pdf,.doc,.docx" style={{ display: 'none' }} onChange={e => handleFiles(e.target.files)} />
-      </div>
-
-      {/* Attached files list */}
-      {files.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.6rem' }}>
-          {files.map((f, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '0.5rem 0.75rem', background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--border-radius-sm)' }}>
-              <Paperclip size={13} style={{ color: 'var(--primary)', flexShrink: 0 }} />
-              <span style={{ flex: 1, fontSize: '0.8rem', color: 'var(--text-main)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.name}</span>
-              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', flexShrink: 0 }}>{(f.size / 1024).toFixed(0)} KB</span>
-              <button type="button" onClick={() => onRemove(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444', display: 'flex', alignItems: 'center', padding: 2, flexShrink: 0 }}>
-                <Trash2 size={13} />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
-
-/* ── Main Page ─────────────────────────────── */
 const UserDashboard = () => {
   const navigate = useNavigate();
   const { pets, loading: isLoadingPets } = usePets();
@@ -114,7 +54,6 @@ const UserDashboard = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  /* Upload files to Supabase Storage and return URLs */
   const uploadFiles = async (files) => {
     const urls = [];
     for (let i = 0; i < files.length; i++) {
@@ -142,7 +81,6 @@ const UserDashboard = () => {
       if (!formData.pet_id) throw new Error('Please select a pet');
       if (!formData.date) throw new Error('Please select a date');
 
-      // Upload attached files first
       let fileRecords = [];
       if (attachedFiles.length > 0) {
         fileRecords = await uploadFiles(attachedFiles);
@@ -162,16 +100,6 @@ const UserDashboard = () => {
     }
   };
 
-  const inputStyle = {
-    width: '100%', padding: '0.65rem 0.875rem',
-    border: '1.5px solid var(--border)', borderRadius: 'var(--border-radius-md)',
-    fontSize: '0.875rem', fontFamily: 'inherit', outline: 'none',
-    background: '#f8fafc', color: 'var(--text-main)', boxSizing: 'border-box',
-    transition: 'border-color 0.2s, box-shadow 0.2s',
-  };
-  const focusInput = e => { e.target.style.borderColor = 'var(--primary)'; e.target.style.boxShadow = '0 0 0 3px var(--primary-light)'; };
-  const blurInput  = e => { e.target.style.borderColor = 'var(--border)'; e.target.style.boxShadow = 'none'; };
-
   return (
     <div className="animate-fade-in relative">
       <div className="dashboard-header flex justify-between items-center">
@@ -180,7 +108,7 @@ const UserDashboard = () => {
           <p className="dashboard-subtitle">Manage your pets and upcoming activities</p>
         </div>
         <Button onClick={() => navigate('/dashboard/pets')}>
-          <Plus size={18} style={{ marginRight: 6 }} /> Add Pet
+          <Plus size={18} className="mr-2" /> Add Pet
         </Button>
       </div>
 
@@ -195,7 +123,7 @@ const UserDashboard = () => {
               {isLoadingPets ? (
                 <><SkeletonCard /><SkeletonCard /></>
               ) : pets.length === 0 ? (
-                <p>No pets found. Add one to get started!</p>
+                <p className="text-muted text-center py-4">No pets found. Add one to get started!</p>
               ) : (
                 pets.slice(0, 2).map(pet => (
                   <PetCard
@@ -223,17 +151,17 @@ const UserDashboard = () => {
             <div className="request-list">
               {isLoadingAppointments ? (
                 <div className="flex flex-col gap-3">
-                  <div style={{ height: '60px', background: 'var(--border)', borderRadius: '8px', opacity: 0.5 }} className="skeleton" />
-                  <div style={{ height: '60px', background: 'var(--border)', borderRadius: '8px', opacity: 0.5 }} className="skeleton" />
+                  <div className="skeleton h-14 rounded-lg opacity-50" />
+                  <div className="skeleton h-14 rounded-lg opacity-50" />
                 </div>
               ) : appointments.length === 0 ? (
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textAlign: 'center', padding: '1rem 0' }}>No recent requests found.</p>
+                <p className="text-muted text-sm text-center py-4">No recent requests found.</p>
               ) : (
                 appointments.map(req => (
                   <div key={req.id} className="request-item">
                     <div>
-                      <h4 style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{req.notes || `${req.pets?.name} Appointment`}</h4>
-                      <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                      <h4 className="font-semibold text-sm mb-1">{req.notes || `${req.pets?.name} Appointment`}</h4>
+                      <p className="text-xs text-muted">
                         {new Date(req.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         {req.doctor && ` • Dr. ${req.doctor.full_name}`}
                       </p>
@@ -243,7 +171,7 @@ const UserDashboard = () => {
                 ))
               )}
             </div>
-            <Button className="w-full mt-4" style={{ marginTop: '1.5rem', width: '100%' }} onClick={() => setIsModalOpen(true)}>
+            <Button className="w-full mt-6" onClick={() => setIsModalOpen(true)}>
               Create New Request
             </Button>
           </div>
@@ -254,20 +182,19 @@ const UserDashboard = () => {
       {isModalOpen && (
         <div className="modal-overlay" onClick={closeModal}>
           <div
-            className="modal-content"
+            className="modal-content max-w-[560px] w-full max-h-[90vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
-            style={{ maxWidth: 560, width: '100%', maxHeight: '90vh', overflowY: 'auto' }}
           >
             <div className="modal-header">
               <h3 className="modal-title">Create Appointment Request</h3>
               <button className="modal-close" onClick={closeModal}><X size={24} /></button>
             </div>
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0.25rem 0' }}>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 py-1">
               {/* Pet */}
               <div className="form-group">
                 <label className="form-label">Which Pet?</label>
-                <select name="pet_id" style={inputStyle} value={formData.pet_id} onChange={handleInputChange} onFocus={focusInput} onBlur={blurInput} required>
+                <select name="pet_id" className="form-input" value={formData.pet_id} onChange={handleInputChange} required>
                   <option value="">Select a pet</option>
                   {pets.map(pet => (
                     <option key={pet.id} value={pet.id}>{pet.name} ({pet.type})</option>
@@ -278,7 +205,7 @@ const UserDashboard = () => {
               {/* Doctor */}
               <div className="form-group">
                 <label className="form-label">Select Doctor (Optional)</label>
-                <select name="doctor_id" style={inputStyle} value={formData.doctor_id} onChange={handleInputChange} onFocus={focusInput} onBlur={blurInput}>
+                <select name="doctor_id" className="form-input" value={formData.doctor_id} onChange={handleInputChange}>
                   <option value="">Any Available Doctor</option>
                   {doctors.map(doc => (
                     <option key={doc.id} value={doc.id}>Dr. {doc.full_name}</option>
@@ -289,21 +216,21 @@ const UserDashboard = () => {
               {/* Date */}
               <div className="form-group">
                 <label className="form-label">Preferred Date</label>
-                <input type="datetime-local" name="date" style={inputStyle} value={formData.date} onChange={handleInputChange} onFocus={focusInput} onBlur={blurInput} required />
+                <input type="datetime-local" name="date" className="form-input" value={formData.date} onChange={handleInputChange} required />
               </div>
 
               {/* Reason */}
               <div className="form-group">
                 <label className="form-label">Reason for Visit</label>
-                <textarea name="notes" style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.6 }} placeholder="e.g. Annual checkup, acting lethargic, previous treatment info..." rows="3" value={formData.notes} onChange={handleInputChange} onFocus={focusInput} onBlur={blurInput} required />
+                <textarea name="notes" className="form-input min-h-[100px] resize-vertical" placeholder="e.g. Annual checkup, acting lethargic, previous treatment info..." rows="3" value={formData.notes} onChange={handleInputChange} required />
               </div>
 
               {/* File attachment */}
               <div className="form-group">
-                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <Paperclip size={13} style={{ color: 'var(--primary)' }} />
+                <label className="form-label flex items-center gap-1.5">
+                  <Paperclip size={13} className="text-primary" />
                   Attach Files (Optional)
-                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 400, marginLeft: 2 }}>
+                  <span className="text-[11px] text-muted font-normal ml-0.5">
                     — previous treatments, X-rays, test results
                   </span>
                 </label>
@@ -316,17 +243,17 @@ const UserDashboard = () => {
 
               {/* Upload progress */}
               {uploadProgress && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.82rem', color: 'var(--primary)', background: 'var(--primary-light)', padding: '0.5rem 0.875rem', borderRadius: 'var(--border-radius-sm)' }}>
-                  <Loader2 size={14} style={{ animation: 'spin 0.8s linear infinite' }} />
+                <div className="flex items-center gap-2 text-xs text-primary bg-primary-light px-4 py-2 rounded-lg">
+                  <Loader2 size={14} className="animate-spin" />
                   {uploadProgress}
                 </div>
               )}
 
-              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+              <div className="flex gap-3 justify-end mt-2">
                 <Button variant="outline" type="button" onClick={closeModal} disabled={isSubmitting}>Cancel</Button>
-                <Button variant="primary" type="submit" disabled={isSubmitting} style={{ minWidth: 140 }}>
+                <Button variant="primary" type="submit" disabled={isSubmitting} className="min-w-[140px]">
                   {isSubmitting
-                    ? <><Loader2 size={16} style={{ animation: 'spin 0.8s linear infinite', marginRight: 6 }} />Submitting…</>
+                    ? <><Loader2 size={16} className="animate-spin mr-2" />Submitting…</>
                     : 'Submit Request'
                   }
                 </Button>
@@ -335,10 +262,6 @@ const UserDashboard = () => {
           </div>
         </div>
       )}
-
-      <style>{`
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-      `}</style>
     </div>
   );
 };

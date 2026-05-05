@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Menu, Search, Bell, Plus, User, Settings, LogOut, X } from 'lucide-react';
-import { useAuth } from '../../hooks/useAuth';
-import Button from '../ui/Button';
-import SettingsModal from '../ui/SettingsModal';
+import { useAuth } from '../hooks/useAuth';
+import Button from '../components/common/Button';
+import SettingsModal from '../components/common/SettingsModal';
 import { toast } from 'react-hot-toast';
-import '../../styles/layout/layout.css';
+import '../styles/layout/layout.css';
 
 const Navbar = ({ toggleSidebar }) => {
   const { user, profile, logout } = useAuth();

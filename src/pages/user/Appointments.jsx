@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Calendar } from 'lucide-react';
-import Button from '../../components/ui/Button';
-import StatusBadge from '../../components/ui/StatusBadge';
+import Button from '../../components/common/Button';
+import StatusBadge from '../../components/common/StatusBadge';
 import AppointmentDetailsModal from '../../components/doctor/AppointmentDetailsModal';
+import BookingModal from '../../components/user/BookingModal';
 import { appointmentService } from '../../services/appointmentService';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
@@ -13,6 +14,7 @@ const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const { user } = useAuth();
   const appointmentsRef = useRef([]);
 
@@ -74,7 +76,7 @@ const Appointments = () => {
           <h1 className="dashboard-title">Appointments</h1>
           <p className="dashboard-subtitle">Schedule and manage your clinic visits</p>
         </div>
-        <Button>Book Appointment</Button>
+        <Button onClick={() => setIsBookingModalOpen(true)}>Book Appointment</Button>
       </div>
 
       <div className="section-card animate-slide-up">
@@ -145,6 +147,12 @@ const Appointments = () => {
         appointment={selectedAppointment}
         onUpdate={loadAppointments}
         isOwner={true}
+      />
+
+      <BookingModal 
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        onBookingSuccess={loadAppointments}
       />
     </div>
   );

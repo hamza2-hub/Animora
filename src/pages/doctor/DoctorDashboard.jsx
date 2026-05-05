@@ -5,10 +5,10 @@ import {
   Clock, AlertTriangle, ArrowRight, CheckCircle,
   History, CalendarCheck, User, Stethoscope
 } from 'lucide-react';
-import StatCard from '../../components/ui/StatCard';
-import Button from '../../components/ui/Button';
-import PetCard from '../../components/ui/PetCard';
-import { SkeletonStat, SkeletonCard } from '../../components/ui/Skeleton';
+import StatCard from '../../components/common/StatCard';
+import Button from '../../components/common/Button';
+import PetCard from '../../components/common/PetCard';
+import { SkeletonStat, SkeletonCard } from '../../components/common/Skeleton';
 import { toast } from 'react-hot-toast';
 import { useDoctorDashboard } from '../../hooks/useDoctorDashboard';
 import { useAuth } from '../../hooks/useAuth';
