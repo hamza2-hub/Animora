@@ -72,7 +72,7 @@ export const appointmentService = {
       .select(`
         *,
         pets(name, type, breed, age, image_url),
-        owner:profiles!owner_id(full_name, phone)
+        owner:profiles!owner_id(full_name)
       `)
       .eq('doctor_id', vetId)
       .order('date', { ascending: false });
