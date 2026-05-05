@@ -127,7 +127,7 @@ const BookingModal = ({ isOpen, onClose, onBookingSuccess }) => {
 
   return (
     <AnimatePresence mode="wait">
-      <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4" style={{ padding: '1.5rem' }}>
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -140,21 +140,40 @@ const BookingModal = ({ isOpen, onClose, onBookingSuccess }) => {
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+          style={{
+            position: 'relative',
+            width: '100%',
+            maxWidth: '32rem',
+            maxHeight: 'calc(100vh - 3rem)',
+            background: 'white',
+            borderRadius: '1rem',
+            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
         >
           {/* Header */}
-          <div className="p-6 border-b border-zinc-100 flex justify-between items-center bg-emerald-50/50 shrink-0">
+          <div style={{
+            padding: '1.25rem 1.5rem',
+            borderBottom: '1px solid #f4f4f5',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            background: 'rgba(236,253,245,0.5)',
+            flexShrink: 0,
+          }}>
             <div>
-              <h2 className="text-xl font-bold text-zinc-900">{t('booking.title')}</h2>
-              <p className="text-sm text-zinc-500">{t('booking.subtitle')}</p>
+              <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#18181b', marginBottom: 2 }}>{t('booking.title')}</h2>
+              <p style={{ fontSize: '0.82rem', color: '#71717a' }}>{t('booking.subtitle')}</p>
             </div>
-            <button onClick={handleClose} className="p-2 hover:bg-white rounded-full transition-colors text-zinc-400">
+            <button onClick={handleClose} style={{ padding: 8, borderRadius: '50%', border: 'none', background: 'transparent', cursor: 'pointer', color: '#a1a1aa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <X size={20} />
             </button>
           </div>
 
           {/* Form Content */}
-          <div className="flex-1 overflow-y-auto custom-scrollbar">
+          <div style={{ flex: 1, overflowY: 'auto' }}>
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
               {isLoading ? (
                 <div className="py-12 flex flex-col items-center justify-center gap-3">
