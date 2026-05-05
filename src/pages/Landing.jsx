@@ -4,7 +4,7 @@ import {
   ArrowRight, Search, MapPin, Stethoscope, ShieldCheck, 
   Globe, ChevronRight, Menu, X, User, Star, TrendingUp, 
   Clock, Zap, Quote, CalendarCheck, Mail, Sparkles, MoveRight, 
-  CheckCircle2, Activity, BarChart3, Database
+  CheckCircle2, Activity, BarChart3, Database, PawPrint
 } from 'lucide-react';
 import AlgeriaMap from '../components/common/AlgeriaMap';
 import Button from '../components/common/Button';
@@ -70,7 +70,7 @@ export default function Landing() {
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2 group transition-transform active:scale-95">
               <div className="size-6 bg-emerald-600 rounded-md flex items-center justify-center shadow-sm">
-                <Stethoscope size={14} className="text-white" />
+                <PawPrint size={14} className="text-white" />
               </div>
               <span className="font-bold text-sm tracking-tightest">Vetocare</span>
             </Link>
@@ -294,7 +294,12 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-12 gap-12 pb-16">
             <div className="md:col-span-4 space-y-4">
-               <span className="font-bold text-sm tracking-tightest">Vetocare</span>
+               <div className="flex items-center gap-2">
+                 <div className="size-6 bg-emerald-600 rounded-md flex items-center justify-center shadow-sm">
+                   <PawPrint size={14} className="text-white" />
+                 </div>
+                 <span className="font-bold text-sm tracking-tightest">Vetocare</span>
+               </div>
                <p className="text-xs text-zinc-500 font-medium max-w-xs leading-relaxed"> Frontier digital infrastructure for Algerian veterinary clinics and pet owners.</p>
             </div>
             <div className="md:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-8">

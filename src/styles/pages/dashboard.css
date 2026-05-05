@@ -293,9 +293,11 @@
   letter-spacing: 0.5px;
 }
 
-.req-accepted { background-color: #e8f5e9; color: #2e7d32; }
-.req-pending { background-color: #fff3e0; color: #ef6c00; }
-.req-rejected { background-color: #ffebee; color: #c62828; }
+.req-completed { background-color: #dcfce7; color: #15803d; }
+.req-confirmed { background-color: #dbeafe; color: #1d4ed8; }
+.req-in_progress { background-color: #fef9c3; color: #a16207; }
+.req-pending { background-color: #fef3c7; color: #d97706; }
+.req-cancelled { background-color: #fee2e2; color: #b91c1c; }
 
 .appointment-card {
   background-color: #ffffff;

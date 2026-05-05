@@ -16,10 +16,10 @@ import '../../styles/pages/dashboard.css';
 
 /* ── Status helpers ───────────────────────── */
 const STATUS_STYLES = {
-  pending:     { bg: '#fef9c3', color: '#a16207', dot: '#eab308', label: 'Pending' },
+  pending:     { bg: '#fef3c7', color: '#d97706', dot: '#f59e0b', label: 'Pending' },
   confirmed:   { bg: '#dbeafe', color: '#1d4ed8', dot: '#3b82f6', label: 'Confirmed' },
-  in_progress: { bg: '#d1fae5', color: '#065f46', dot: '#10b981', label: 'In Progress' },
-  completed:   { bg: '#e0f2fe', color: '#0369a1', dot: '#0ea5e9', label: 'Completed' },
+  in_progress: { bg: '#fef9c3', color: '#a16207', dot: '#eab308', label: 'In Progress' },
+  completed:   { bg: '#dcfce7', color: '#15803d', dot: '#22c55e', label: 'Completed' },
   cancelled:   { bg: '#fee2e2', color: '#b91c1c', dot: '#ef4444', label: 'Cancelled' },
   urgent:      { bg: '#fee2e2', color: '#b91c1c', dot: '#ef4444', label: 'Urgent' },
 };
@@ -254,7 +254,7 @@ const DoctorDashboard = () => {
               <h2 className="section-title">Recent Patients</h2>
               <Button variant="text">See All <ArrowRight size={16} style={{ marginLeft: 4 }} /></Button>
             </div>
-            <div className="recent-patients-grid">
+            <div className="recent-patients-grid-compact">
               {isLoading ? (
                 <><SkeletonCard /><SkeletonCard /><SkeletonCard /></>
               ) : recentPatients.length === 0 ? (
@@ -270,7 +270,7 @@ const DoctorDashboard = () => {
                     status={pet.status}
                     image={pet.image_url}
                     ownerName={pet.profiles?.full_name}
-                    createdAt={pet.created_at}
+                    medicalRecordsCount={pet.medical_records?.length || 0}
                   />
                 ))
               )}

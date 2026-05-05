@@ -1,252 +1,44 @@
 /* =============================================
-   PetCard — Premium SaaS Card Design
+   PetCard — Matching Doctor Card Design
    ============================================= */
 
-@keyframes cardEnter {
-  from { opacity: 0; transform: translateY(18px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+/* Hover accent bar reveal */
+.pet-card-accent {
+  opacity: 0 !important;
+  transition: opacity 0.2s ease !important;
 }
 
-@keyframes badgePop {
-  0%   { transform: scale(0.7); opacity: 0; }
-  70%  { transform: scale(1.12); opacity: 1; }
-  100% { transform: scale(1); }
+*:hover > .pet-card-accent {
+  opacity: 1 !important;
 }
 
-@keyframes imageReveal {
-  from { opacity: 0; transform: scale(1.08); }
-  to   { opacity: 1; transform: scale(1); }
-}
+/* ─── Grid layouts ────────────────────────── */
 
-.pet-card {
-  display: flex;
-  flex-direction: column; 
-  align-items: stretch;
-  gap: 1.25rem;
-  padding: 1.75rem;
-  background: #ffffff;
-  border-radius: 28px;
-  border: 1.5px solid #e8edf3;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  animation: cardEnter 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-  width: 100%;
-  box-sizing: border-box;
-  min-height: 220px;
-  justify-content: flex-start;
-}
-
-/* Subtle gradient sweep on hover */
-.pet-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(120deg, rgba(74, 222, 128, 0.06) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-}
-
-.pet-card:hover::before {
-  opacity: 1;
-}
-
-.pet-card:hover {
-  box-shadow: 0 20px 50px rgba(16, 185, 129, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06);
-  border-color: #86efac;
-  background: #fafffe;
-}
-
-/* ---- Image ---- */
-.pet-card__image-wrap {
-  flex-shrink: 0;
-  width: 120px;
-  height: 120px;
-  border-radius: 22px;
-  overflow: hidden;
-  background: #f0faf5;
-  border: 2px solid #d4edd9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.12);
-  animation: imageReveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
-}
-
-.pet-card__image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.pet-card:hover .pet-card__image {
-  transform: scale(1.15);
-}
-
-.pet-card__image-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #6dbb8a;
-  background: linear-gradient(135deg, #f0faf5 0%, #dcfce7 100%);
-}
-
-/* Container for top part (Image + Name/Badge side-by-side) */
-.pet-card__header-box {
-  display: flex;
-  align-items: center;
+/* Dashboard quick overview (user) — same as doctor grid */
+.pets-grid-compact {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.25rem;
 }
 
-/* ---- Body ---- */
-.pet-card__body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  min-width: 0;
-}
-
-/* ---- Top row: name + badge ---- */
-.pet-card__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-.pet-card__name {
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: #0f172a;
-  letter-spacing: -0.03em;
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: color 0.2s ease;
-}
-
-.pet-card:hover .pet-card__name {
-  color: #059669;
-}
-
-/* ---- Badges ---- */
-.pet-card__badge {
-  flex-shrink: 0;
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 0.35rem 1rem;
-  border-radius: 999px;
-  text-transform: capitalize;
-  letter-spacing: 0.5px;
-  border: 1.5px solid transparent;
-  animation: badgePop 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
-}
-
-.badge-healthy {
-  background: #dcfce7;
-  color: #15803d;
-  border-color: #86efac;
-}
-
-.badge-treatment {
-  background: #fef9c3;
-  color: #a16207;
-  border-color: #fde047;
-}
-
-.badge-emergency {
-  background: #fee2e2;
-  color: #b91c1c;
-  border-color: #fca5a5;
-}
-
-.badge-default {
-  background: #f1f5f9;
-  color: #475569;
-  border-color: #e2e8f0;
-}
-
-/* ---- Info rows ---- */
-.pet-card__info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.pet-card__type-row {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 0.92rem;
-  color: #334155;
-  font-weight: 500;
-  text-transform: capitalize;
-}
-
-.pet-card__dot {
-  color: #cbd5e1;
-  font-weight: 400;
-}
-
-.pet-card__age {
-  font-size: 0.875rem;
-  color: #64748b;
-  padding-left: 0.1rem;
-}
-
-/* ---- Footer ---- */
-.pet-card__footer {
-  margin-top: auto;
-  padding-top: 1.25rem;
-  border-top: 1.5px dashed #e2e8f0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.pet-card__meta {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.78rem;
-  color: #94a3b8;
-}
-
-.pet-card__owner {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #059669;
-  background: #ecfdf5;
-  padding: 0.25rem 0.7rem;
-  border-radius: 8px;
-  border: 1px solid #a7f3d0;
-}
-
-/* =============================================
-   Skeleton Loading Card
-   ============================================= */
-.pet-card-skeleton {
-  display: flex;
-  flex-direction: column;
+/* Doctor "Recent Patients" — same sizing */
+.recent-patients-grid-compact {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.25rem;
-  padding: 1.75rem;
-  background: #ffffff;
-  border-radius: 28px;
-  border: 1.5px solid #e8edf3;
-  width: 100%;
-  box-sizing: border-box;
+}
+
+/* Full-page MyPets grid */
+.pets-page-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ─── Skeleton loading card (matching card shape) ─── */
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 .skeleton-pulse {
@@ -256,25 +48,8 @@
   border-radius: 10px;
 }
 
-@keyframes shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-.skeleton-img {
-  flex-shrink: 0;
-  width: 120px;
-  height: 120px;
-  border-radius: 22px;
-}
-
-.skeleton-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-}
-
-.skeleton-line-lg { height: 22px; width: 50%; }
-.skeleton-line-md { height: 15px; width: 70%; }
-.skeleton-line-sm { height: 13px; width: 38%; }
+.skeleton-img  { flex-shrink: 0; width: 60px; height: 60px; border-radius: 50%; }
+.skeleton-body { flex: 1; display: flex; flex-direction: column; gap: 0.55rem; }
+.skeleton-line-lg { height: 16px; width: 50%; }
+.skeleton-line-md { height: 12px; width: 70%; }
+.skeleton-line-sm { height: 11px; width: 38%; }

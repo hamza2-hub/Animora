@@ -21,7 +21,7 @@ export const usePets = () => {
 
       const { data, error } = await supabase
         .from('pets')
-        .select('*')
+        .select('*, medical_records(id)')
         .eq('owner_id', user.id)
         .order('created_at', { ascending: false });
 
@@ -54,10 +54,16 @@ export const usePets = () => {
             table: 'pets',
             filter: `owner_id=eq.${user.id}`
           },
-          () => {
-            // Refetch when data changes
-            fetchPets();
-          }
+          () => fetchPets()
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'medical_records'
+          },
+          () => fetchPets()
         )
         .subscribe();
     };

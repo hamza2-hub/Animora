@@ -59,7 +59,7 @@ export const medicalService = {
       .from('medical_records')
       .select('*')
       .eq('pet_id', petId)
-      .order('date', { ascending: false });
+      .order('created_at', { ascending: false });
 
     if (error) throw error;
     return data;

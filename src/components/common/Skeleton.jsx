@@ -11,12 +11,35 @@ const Skeleton = ({ className = '', style = {} }) => {
 };
 
 export const SkeletonCard = () => (
-  <div className="pet-card-skeleton">
-    <div className="skeleton-pulse skeleton-img" />
-    <div className="skeleton-body">
-      <div className="skeleton-pulse skeleton-line-lg" />
-      <div className="skeleton-pulse skeleton-line-md" />
-      <div className="skeleton-pulse skeleton-line-sm" />
+  <div style={{
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--border-radius-lg)',
+    padding: '1.5rem',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+  }}>
+    {/* Header row */}
+    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+      <div className="skeleton-pulse" style={{ width: 60, height: 60, borderRadius: '50%', flexShrink: 0 }} />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+        <div className="skeleton-pulse" style={{ height: 16, width: '55%' }} />
+        <div className="skeleton-pulse" style={{ height: 12, width: '40%' }} />
+        <div className="skeleton-pulse" style={{ height: 10, width: '30%' }} />
+      </div>
+    </div>
+    {/* Chips */}
+    <div style={{ display: 'flex', gap: '0.5rem' }}>
+      <div className="skeleton-pulse" style={{ height: 24, width: 72, borderRadius: 99 }} />
+      <div className="skeleton-pulse" style={{ height: 24, width: 90, borderRadius: 99 }} />
+    </div>
+    {/* Text */}
+    <div className="skeleton-pulse" style={{ height: 36, width: '100%', borderRadius: 8 }} />
+    {/* Footer */}
+    <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '0.75rem', borderTop: '1px solid var(--border)' }}>
+      <div className="skeleton-pulse" style={{ height: 14, width: 100 }} />
+      <div className="skeleton-pulse" style={{ height: 22, width: 64, borderRadius: 99 }} />
     </div>
   </div>
 );

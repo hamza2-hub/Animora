@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Clock, User, Cat, Dog, Bird, HelpCircle, Heart, Activity, ShieldCheck } from 'lucide-react';
+import { Cat, Dog, Bird, HelpCircle, ShieldCheck, Activity, Heart, Clock, ChevronRight, User } from 'lucide-react';
 import '../../styles/components/PetCard.css';
 
 const TYPE_ICONS = { cat: Cat, dog: Dog, bird: Bird };
@@ -11,10 +11,40 @@ const STATUS_CONFIG = {
   emergency: { label: 'Emergency', icon: Heart,       bg: '#fee2e2', color: '#b91c1c', border: '#fca5a5', dot: '#ef4444' },
 };
 
-const PetCard = ({ name, type, age, breed, status, image, ownerName, createdAt }) => {
+/* ─── Avatar (same style as Doctor cards) ──── */
+const PetAvatar = ({ image, name, type, size = 60 }) => {
+  const TypeIcon = TYPE_ICONS[type?.toLowerCase()] || HelpCircle;
+  const colors = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4'];
+  const color = colors[(name?.charCodeAt(0) || 0) % colors.length];
+
+  return image ? (
+    <img src={image} alt={name} style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', display: 'block' }} />
+  ) : (
+    <div style={{
+      width: size, height: size, borderRadius: '50%',
+      background: `linear-gradient(135deg, ${color}22, ${color}44)`,
+      border: `2px solid ${color}33`,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      color,
+    }}>
+      <TypeIcon size={size * 0.4} strokeWidth={1.5} />
+    </div>
+  );
+};
+
+const PetCard = ({ id, name, type, age, breed, status, image, ownerName, createdAt, medicalRecordsCount = 0, onClick }) => {
   const TypeIcon = TYPE_ICONS[type?.toLowerCase()] || HelpCircle;
   const statusKey = status?.toLowerCase();
-  const cfg = STATUS_CONFIG[statusKey] || { label: status || 'Unknown', bg: '#f1f5f9', color: '#475569', border: '#e2e8f0', dot: '#94a3b8' };
+  
+  // Logic: Only show "Healthy" if status is healthy AND they've actually seen a doctor (has medical records)
+  const isHealthyButNotVisited = statusKey === 'healthy' && medicalRecordsCount === 0;
+  
+  const cfg = isHealthyButNotVisited 
+    ? { label: 'Registered', icon: ShieldCheck, bg: '#f1f5f9', color: '#64748b', border: '#e2e8f0', dot: '#94a3b8' }
+    : (STATUS_CONFIG[statusKey] || {
+        label: status || 'Unknown', icon: ShieldCheck,
+        bg: '#f1f5f9', color: '#475569', border: '#e2e8f0', dot: '#94a3b8',
+      });
 
   const formatAge = (a) => {
     if (a === null || a === undefined || a === '') return null;
@@ -27,73 +57,122 @@ const PetCard = ({ name, type, age, breed, status, image, ownerName, createdAt }
 
   return (
     <motion.div
-      className="pet-card"
-      whileHover={{ y: -5, scale: 1.01 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      onClick={onClick}
+      style={{
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--border-radius-lg)',
+        padding: '1.5rem',
+        cursor: 'pointer',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        boxShadow: 'var(--shadow-soft)',
+        transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+      whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(16,185,129,0.12)', borderColor: 'var(--primary)' }}
     >
-      {/* Top accent gradient line */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: `linear-gradient(90deg, ${cfg.color}aa, ${cfg.dot})`, borderRadius: '28px 28px 0 0' }} />
+      {/* Top accent bar */}
+      <div style={{
+        position: 'absolute', top: 0, left: 0, right: 0, height: 3,
+        background: `linear-gradient(90deg, ${cfg.color}aa, ${cfg.dot})`,
+        opacity: isHealthyButNotVisited ? 0 : 0, // Keep it hidden if just registered
+        transition: 'opacity 0.2s',
+      }} className="pet-card-accent" />
 
-      {/* ── Header: image + name + status ── */}
-      <div className="pet-card__header-box" style={{ paddingTop: '0.25rem' }}>
-        {/* Image */}
-        <div className="pet-card__image-wrap" style={{ borderColor: cfg.border }}>
-          {image ? (
-            <img src={image} alt={name} className="pet-card__image" />
-          ) : (
-            <div className="pet-card__image-placeholder">
-              <TypeIcon size={42} strokeWidth={1.4} />
-            </div>
+      {/* Header row: avatar + name + status */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+        <div style={{ position: 'relative', flexShrink: 0 }}>
+          <PetAvatar image={image} name={name} type={type} size={60} />
+          {/* Online-style status dot */}
+          {!isHealthyButNotVisited && (
+            <div style={{
+              position: 'absolute', bottom: -2, right: -2,
+              width: 14, height: 14, borderRadius: '50%',
+              background: cfg.dot, border: '2px solid white',
+            }} />
           )}
         </div>
 
-        {/* Name + meta */}
-        <div className="pet-card__body">
-          <div className="pet-card__top">
-            <h3 className="pet-card__name">{name || 'Unknown'}</h3>
-          </div>
-
-          {/* Status pill */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '0.25rem 0.7rem', borderRadius: 99, background: cfg.bg, border: `1.5px solid ${cfg.border}`, width: 'fit-content' }}>
-            <span style={{ width: 7, height: 7, borderRadius: '50%', background: cfg.dot, flexShrink: 0 }} />
-            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: cfg.color, letterSpacing: '0.04em' }}>{cfg.label}</span>
-          </div>
-
-          {/* Type + breed */}
-          <div className="pet-card__info" style={{ marginTop: '0.35rem', gap: '0.2rem' }}>
-            <span className="pet-card__type-row">
-              <TypeIcon size={13} strokeWidth={2} />
-              <strong style={{ textTransform: 'capitalize' }}>{type || 'Unknown'}</strong>
-              {breed && <><span style={{ color: '#cbd5e1', margin: '0 2px' }}>·</span><span style={{ color: '#64748b', fontWeight: 400 }}>{breed}</span></>}
-            </span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{
+            fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)',
+            marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+          }}>
+            {name || 'Unknown'}
+          </p>
+          <p style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 600, marginBottom: 4, textTransform: 'capitalize' }}>
+            {type || 'Pet'}{breed ? ` · ${breed}` : ''}
+          </p>
+          {/* Status pill inline */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: '0.72rem', fontWeight: 700, color: cfg.color }}>
+            {!isHealthyButNotVisited && <span style={{ width: 7, height: 7, borderRadius: '50%', background: cfg.dot, flexShrink: 0 }} />}
+            {cfg.label}
           </div>
         </div>
       </div>
 
-      {/* ── Info chips row ── */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', paddingTop: '0.25rem' }}>
+      {/* Info chips */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
         {formatAge(age) && (
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '0.3rem 0.75rem', borderRadius: 99, background: '#f8fafc', border: '1px solid #e2e8f0', fontSize: '0.78rem', color: '#475569', fontWeight: 600 }}>
-            🎂 {formatAge(age)} old
-          </div>
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: 4,
+            fontSize: '0.75rem', fontWeight: 600,
+            padding: '0.3rem 0.65rem', borderRadius: 99,
+            background: 'var(--primary-light)', color: 'var(--primary-dark)',
+          }}>
+            <Clock size={11} /> {formatAge(age)} old
+          </span>
         )}
         {ownerName && (
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '0.3rem 0.75rem', borderRadius: 99, background: '#ecfdf5', border: '1px solid #a7f3d0', fontSize: '0.78rem', color: '#059669', fontWeight: 600 }}>
+          <span style={{
+            display: 'inline-flex', alignItems: 'center', gap: 4,
+            fontSize: '0.75rem', fontWeight: 500,
+            padding: '0.3rem 0.65rem', borderRadius: 99,
+            background: '#f1f5f9', color: 'var(--text-muted)',
+          }}>
             <User size={11} /> {ownerName}
-          </div>
+          </span>
         )}
       </div>
 
-      {/* ── Footer ── */}
-      <div className="pet-card__footer">
-        <span className="pet-card__meta">
-          <Clock size={12} />
-          {addedDate ? `Joined ${addedDate}` : 'Recently added'}
+      {/* Status description */}
+      <p style={{
+        fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.6,
+        display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+      }}>
+        {isHealthyButNotVisited 
+          ? 'This pet has been registered successfully. Schedule a checkup to verify their health status.'
+          : statusKey === 'emergency'
+          ? 'This pet needs urgent veterinary attention and is marked for emergency care.'
+          : statusKey === 'treatment'
+          ? 'This pet is currently undergoing treatment. Follow up on their recovery.'
+          : 'This pet is in good health. Regular checkups are recommended.'}
+      </p>
+
+      {/* Footer */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        paddingTop: '0.75rem', borderTop: '1px solid var(--border)',
+      }}>
+        <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: 4 }}>
+          {addedDate ? `Joined ${addedDate}` : 'Recently added'} <ChevronRight size={14} />
         </span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.72rem', fontWeight: 700, color: cfg.color, background: cfg.bg, padding: '0.2rem 0.6rem', borderRadius: 99 }}>
-          {React.createElement(cfg.icon || ShieldCheck, { size: 11 })}
-          {cfg.label}
-        </div>
+        {!isHealthyButNotVisited && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 4,
+            fontSize: '0.72rem', fontWeight: 700, color: cfg.color,
+            background: cfg.bg, padding: '0.3rem 0.65rem', borderRadius: 99,
+          }}>
+            {React.createElement(cfg.icon || ShieldCheck, { size: 12 })}
+            {cfg.label}
+          </div>
+        )}
       </div>
     </motion.div>
   );

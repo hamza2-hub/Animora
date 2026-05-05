@@ -16,7 +16,8 @@ export const usePatients = () => {
         .from('pets')
         .select(`
           *,
-          profiles(full_name)
+          profiles(full_name),
+          medical_records(id)
         `)
         .order('created_at', { ascending: false });
 

@@ -29,7 +29,7 @@ export const useDoctorDashboard = () => {
         // All pets (patient count + recent patients)
         supabase
           .from('pets')
-          .select('*, profiles(full_name)')
+          .select('*, profiles(full_name), medical_records(id)')
           .order('created_at', { ascending: false }),
 
         // Today's appointments count
@@ -100,6 +100,7 @@ export const useDoctorDashboard = () => {
     const appointmentsChannel = supabase
       .channel('doctor_dashboard_appointments')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, fetchAll)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'medical_records' }, fetchAll)
       .subscribe();
 
     return () => {

@@ -79,7 +79,7 @@ const MyPets = () => {
           )}
         </div>
         {isLoading ? (
-          <div className="pets-grid">
+          <div className="pets-page-grid">
             <SkeletonCard />
             <SkeletonCard />
             <SkeletonCard />
@@ -114,7 +114,7 @@ const MyPets = () => {
             />
           </div>
         ) : (
-          <div className="pets-grid">
+          <div className="pets-page-grid">
             {pets.map(pet => (
               <div key={pet.id} style={{ position: 'relative' }}>
                 <PetCard 
@@ -125,31 +125,33 @@ const MyPets = () => {
                   status={pet.status} 
                   image={pet.image_url} 
                   createdAt={pet.created_at}
+                  medicalRecordsCount={pet.medical_records?.length || 0}
                 />
                 <button
-                  onClick={() => handleDelete(pet.id, pet.name)}
+                  onClick={(e) => { e.stopPropagation(); handleDelete(pet.id, pet.name); }}
                   disabled={deletingId === pet.id}
                   title="Remove pet"
                   style={{
                     position: 'absolute',
-                    top: '10px',
-                    right: '10px',
-                    background: '#fee2e2',
+                    top: '12px',
+                    right: '12px',
+                    background: 'rgba(254,226,226,0.95)',
                     border: '1px solid #fca5a5',
                     borderRadius: '8px',
-                    padding: '6px',
+                    padding: '6px 7px',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     color: '#dc2626',
-                    transition: 'background 0.2s',
+                    transition: 'background 0.2s, box-shadow 0.2s',
                     zIndex: 10,
+                    backdropFilter: 'blur(4px)',
                   }}
                 >
                   {deletingId === pet.id
-                    ? <Loader2 size={15} className="animate-spin" />
-                    : <Trash2 size={15} />}
+                    ? <Loader2 size={14} className="animate-spin" />
+                    : <Trash2 size={14} />}
                 </button>
               </div>
             ))}

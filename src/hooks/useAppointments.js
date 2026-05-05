@@ -29,7 +29,7 @@ export const useAppointments = () => {
       if (!user) return;
 
       const subscription = supabase
-        .channel('appointments_changes')
+        .channel(`appointments_user_${user.id}`)
         .on(
           'postgres_changes',
           {
