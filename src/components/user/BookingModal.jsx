@@ -93,19 +93,19 @@ const BookingModal = ({ isOpen, onClose, onBookingSuccess }) => {
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden"
+          className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden"
         >
-          <div className="p-6 border-b border-zinc-100 flex justify-between items-center bg-emerald-50/50">
+          <div className="p-6 border-b border-zinc-100 flex justify-between items-center bg-emerald-50/50 shrink-0">
             <div>
               <h2 className="text-xl font-bold text-zinc-900">Book Appointment</h2>
               <p className="text-sm text-zinc-500">Schedule a visit with our specialists</p>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-white rounded-full transition-colors text-zinc-400">
+            <button type="button" onClick={onClose} className="p-2 hover:bg-white rounded-full transition-colors text-zinc-400">
               <X size={20} />
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
             {isLoading ? (
               <div className="py-12 flex flex-col items-center justify-center gap-3">
                 <Loader2 className="animate-spin text-emerald-600" size={32} />
