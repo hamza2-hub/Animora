@@ -24,7 +24,7 @@
   "dashboard": {
     "title": "Mon Tableau de Bord",
     "subtitle": "Gérez vos animaux et vos activités à venir",
-    "create_request": "Créer une Demande",
+    "create_request": "Ajouter Demande",
     "stats": {
       "my_pets": "Mes Animaux",
       "upcoming": "À venir",

@@ -24,7 +24,7 @@
   "dashboard": {
     "title": "My Dashboard",
     "subtitle": "Manage your pets and upcoming activities",
-    "create_request": "Create New Request",
+    "create_request": "Add Request",
     "stats": {
       "my_pets": "My Pets",
       "upcoming": "Upcoming",
