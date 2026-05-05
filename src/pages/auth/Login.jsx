@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { PawPrint, Loader2, User, Stethoscope, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { supabase } from '../../lib/supabase';
 import Button from '../../components/common/Button';
 import toast from 'react-hot-toast';
 import '../../styles/pages/auth.css';
@@ -26,7 +27,26 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await login(email, password);
+      const data = await login(email, password);
+      
+      // Fetch user profile to verify role
+      const { data: userProfile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single();
+        
+      if (profileError) throw profileError;
+      
+      const actualRole = userProfile?.role || 'user';
+      
+      if (actualRole !== role) {
+        // Sign out immediately if roles don't match
+        await supabase.auth.signOut();
+        const expectedTab = actualRole === 'doctor' ? 'Veterinarian' : 'Pet Owner';
+        throw new Error(`Please select the ${expectedTab} tab to log in to this account.`);
+      }
+
       toast.success('Successfully logged in!');
       // Navigation handled by useEffect
     } catch (error) {

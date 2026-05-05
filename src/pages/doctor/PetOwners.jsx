@@ -9,13 +9,32 @@ const PetOwners = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchOwners = async () => {
+      const fetchOwners = async () => {
       try {
-        // Fetch all users with role = 'user' and join their pets
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        // First, get all unique owner_ids from this doctor's appointments
+        const { data: appointmentsData, error: aptError } = await supabase
+          .from('appointments')
+          .select('owner_id')
+          .eq('doctor_id', user.id);
+
+        if (aptError) throw aptError;
+
+        const clientIds = [...new Set((appointmentsData || []).map(a => a.owner_id))];
+
+        if (clientIds.length === 0) {
+          setOwners([]);
+          setLoading(false);
+          return;
+        }
+
+        // Fetch only those specific clients and their pets
         const { data, error } = await supabase
           .from('profiles')
           .select('id, full_name, avatar_url, pets(id, name, type)')
-          .eq('role', 'user');
+          .in('id', clientIds);
 
         if (error) throw error;
         setOwners(data || []);
@@ -33,8 +52,8 @@ const PetOwners = () => {
     <div className="animate-fade-in">
       <div className="dashboard-header flex justify-between items-center hide-mobile">
         <div>
-          <h1 className="dashboard-title">Pet Owners</h1>
-          <p className="dashboard-subtitle">Manage client information and contacts</p>
+          <h1 className="dashboard-title">My Clients</h1>
+          <p className="dashboard-subtitle">Manage your client information and contacts</p>
         </div>
       </div>
 
@@ -44,7 +63,7 @@ const PetOwners = () => {
             <Loader2 className="animate-spin" size={28} color="var(--primary)" />
           </div>
         ) : owners.length === 0 ? (
-          <p style={{ color: 'var(--text-muted)', padding: '1rem 0' }}>No pet owners registered yet.</p>
+          <p style={{ color: 'var(--text-muted)', padding: '1rem 0' }}>No clients registered yet.</p>
         ) : (
           <div className="flex flex-col gap-3" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {owners.map(owner => {
@@ -62,7 +81,6 @@ const PetOwners = () => {
                       </p>
                     </div>
                   </div>
-                  <Button variant="outline" size="small">View Profile</Button>
                 </div>
               );
             })}

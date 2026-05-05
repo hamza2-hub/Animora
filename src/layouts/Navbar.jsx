@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Menu, Search, Bell, Plus, User, Settings, LogOut, X } from 'lucide-react';
+import { Menu, Search, Bell, Plus, User, Settings, LogOut, X, Check } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { useNotifications } from '../hooks/useNotifications';
 import Button from '../components/common/Button';
 import SettingsModal from '../components/common/SettingsModal';
 import { toast } from 'react-hot-toast';
@@ -8,6 +9,7 @@ import '../styles/layout/layout.css';
 
 const Navbar = ({ toggleSidebar }) => {
   const { user, profile, logout } = useAuth();
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
   const userRole = profile?.role || 'user';
   const fullName = profile?.full_name || 'User';
   
@@ -18,20 +20,32 @@ const Navbar = ({ toggleSidebar }) => {
   };
   
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [settingsTab, setSettingsTab] = useState('profile');
-  const dropdownRef = useRef(null);
+  
+  const profileDropdownRef = useRef(null);
+  const notifDropdownRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
         setIsProfileOpen(false);
+      }
+      if (notifDropdownRef.current && !notifDropdownRef.current.contains(event.target)) {
+        setIsNotificationsOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleNotificationClick = (notif) => {
+    if (!notif.read) markAsRead(notif.id);
+    setIsNotificationsOpen(false);
+    // Could navigate to notif.link here if implemented
+  };
 
   return (
     <header className="navbar flex items-center justify-between">
@@ -52,12 +66,66 @@ const Navbar = ({ toggleSidebar }) => {
           </Button>
         )}
         
-        <button className="notification-btn hover-bg relative">
-          <Bell size={22} />
-          <span className="notification-dot"></span>
-        </button>
+        <div className="relative" ref={notifDropdownRef}>
+          <button 
+            className="notification-btn hover-bg relative"
+            onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+          >
+            <Bell size={22} />
+            {unreadCount > 0 && (
+              <span className="absolute top-0 right-0 flex items-center justify-center min-w-[18px] h-[18px] text-[10px] font-bold text-white bg-red-500 rounded-full border-2 border-white px-1">
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
+          </button>
 
-        <div className="relative" ref={dropdownRef}>
+          {isNotificationsOpen && (
+            <div className="dropdown-menu" style={{ width: '320px', right: '-60px' }}>
+              <div className="flex justify-between items-center px-4 py-3 border-b border-zinc-100">
+                <h3 className="font-bold text-sm">Notifications</h3>
+                {unreadCount > 0 && (
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); markAllAsRead(); }}
+                    className="text-xs text-emerald-600 font-semibold hover:text-emerald-700 flex items-center gap-1"
+                  >
+                    <Check size={14} /> Mark all read
+                  </button>
+                )}
+              </div>
+              
+              <div className="max-h-[300px] overflow-y-auto">
+                {notifications.length === 0 ? (
+                  <div className="p-6 text-center text-zinc-500 text-sm">
+                    No notifications yet
+                  </div>
+                ) : (
+                  notifications.map(notif => (
+                    <div 
+                      key={notif.id}
+                      onClick={() => handleNotificationClick(notif)}
+                      className={`p-4 border-b border-zinc-50 cursor-pointer transition-colors hover:bg-zinc-50 flex gap-3 ${!notif.read ? 'bg-emerald-50/30' : ''}`}
+                    >
+                      <div className={`shrink-0 w-2 h-2 mt-1.5 rounded-full ${!notif.read ? 'bg-emerald-500' : 'bg-transparent'}`} />
+                      <div>
+                        <p className={`text-sm ${!notif.read ? 'font-semibold text-zinc-900' : 'text-zinc-700'}`}>
+                          {notif.title}
+                        </p>
+                        <p className="text-xs text-zinc-500 mt-0.5 leading-relaxed">
+                          {notif.message}
+                        </p>
+                        <p className="text-[10px] text-zinc-400 mt-1">
+                          {new Date(notif.created_at).toLocaleDateString()} {new Date(notif.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="relative" ref={profileDropdownRef}>
           <div 
             className="profile-wrapper flex items-center gap-3 cursor-pointer hover-bg"
             onClick={() => setIsProfileOpen(!isProfileOpen)}
