@@ -9,17 +9,24 @@ import '../../styles/pages/dashboard.css';
 import '../../styles/pages/appointments.css';
 
 const DoctorAppointments = () => {
+
   const [allAppointments, setAllAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [activeTab, setActiveTab] = useState('today');
   const [search, setSearch] = useState('');
 
-  const fetchAppointments = async () => {
+  const fetchAppointments = async (isSilent = false) => {
     try {
+      if (!isSilent) setLoading(true);
+      // Get the current auth user directly (same as RLS uses internally)
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
       const { data, error } = await supabase
         .from('appointments')
         .select('*, pets(name, type, breed, age), owner:profiles!owner_id(full_name)')
+        .or(`doctor_id.eq.${user.id},doctor_id.is.null`)
         .order('date', { ascending: false });
 
       if (error) throw error;
@@ -32,18 +39,21 @@ const DoctorAppointments = () => {
     } catch (err) {
       console.error('Error fetching appointments:', err);
     } finally {
-      setLoading(false);
+      if (!isSilent) setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchAppointments();
+
     const channel = supabase
       .channel('doctor_appointments_page')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, fetchAppointments)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, () => fetchAppointments(true))
       .subscribe();
+
     return () => channel.unsubscribe();
   }, []); // eslint-disable-line
+
 
   const now = new Date();
   const todayStart = new Date(now); todayStart.setHours(0, 0, 0, 0);

@@ -48,7 +48,6 @@ export const petService = {
 
     if (error) {
       console.error('Supabase Insert Error:', error);
-      alert(`Database error: ${error.message}`);
       throw error;
     }
     return data;

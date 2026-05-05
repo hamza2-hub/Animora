@@ -45,5 +45,46 @@ export const appointmentService = {
 
     if (error) throw error;
     return data;
-  }
+  },
+
+  // ── Doctor-specific ────────────────────────────────────────────────────────
+
+  /**
+   * Fetch only the appointments assigned to this vet.
+   * Double-gated: explicit doctor_id filter here + RLS policy in DB.
+   */
+  async getAppointmentsForVet(vetId) {
+    if (!vetId) throw new Error('Vet ID is required');
+
+    const { data, error } = await supabase
+      .from('appointments')
+      .select(`
+        *,
+        pets(name, type, breed, age, image_url),
+        owner:profiles!owner_id(full_name, phone)
+      `)
+      .eq('doctor_id', vetId)
+      .order('date', { ascending: false });
+
+    if (error) throw error;
+    return data;
+  },
+
+  /**
+   * Update appointment status — doctor can only touch their own rows (RLS enforced).
+   */
+  async updateAppointmentStatus(appointmentId, status, notes = null) {
+    const payload = { status };
+    if (notes !== null) payload.notes = notes;
+
+    const { data, error } = await supabase
+      .from('appointments')
+      .update(payload)
+      .eq('id', appointmentId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
 };

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  ArrowRight, Search, MapPin, Stethoscope, ShieldCheck, 
-  Globe, ChevronRight, Menu, X, User, Star, TrendingUp, 
-  Clock, Zap, Quote, CalendarCheck, Mail, Sparkles, MoveRight, 
+import {
+  ArrowRight, Search, MapPin, Stethoscope, ShieldCheck,
+  Globe, ChevronRight, Menu, X, User, Star, TrendingUp,
+  Clock, Zap, Quote, CalendarCheck, Mail, Sparkles, MoveRight,
   CheckCircle2, Activity, BarChart3, Database
 } from 'lucide-react';
 import AlgeriaMap from '../components/common/AlgeriaMap';
@@ -11,8 +11,8 @@ import Button from '../components/common/Button';
 
 export default function Landing() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0); 
-  
+  const [scrollProgress, setScrollProgress] = useState(0);
+
   const featuresRef = useRef(null);
   const spotlightRef = useRef(null);
 
@@ -60,10 +60,10 @@ export default function Landing() {
       `}</style>
 
       {/* Structured Grid Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.15]" 
-           style={{ backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`, backgroundSize: '40px 40px' }} 
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.15]"
+        style={{ backgroundImage: `linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px)`, backgroundSize: '40px 40px' }}
       />
-      
+
       {/* Navigation - Compact 56px */}
       <nav className="fixed top-0 w-full z-[120] bg-white/80 backdrop-blur-md border-b border-zinc-200/60">
         <div className="max-w-7xl mx-auto px-4 h-[56px] flex items-center justify-between">
@@ -80,7 +80,7 @@ export default function Landing() {
               <a href="#feedback" className="hover:text-emerald-600 transition-colors">Community</a>
             </div>
           </div>
-          
+
           <div className="hidden md:flex items-center gap-2">
             <Link to="/register" className="text-[12px] font-bold text-zinc-500 hover:text-zinc-900 px-3 py-1.5 transition-colors">Register</Link>
             <div className="h-4 w-px bg-zinc-200 mx-1" />
@@ -94,7 +94,7 @@ export default function Landing() {
       </nav>
 
       <main className="pt-[56px]">
-        
+
         {/* Compact Hero Section */}
         <section className="max-w-7xl mx-auto px-4 pt-16 pb-12 relative border-b border-zinc-100">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -106,7 +106,7 @@ export default function Landing() {
                 Unified health records for <span className="text-emerald-600">Algerian clinics.</span>
               </h1>
               <p className="text-sm md:text-base text-zinc-500 font-medium max-w-lg leading-relaxed">
-                Aggregating paper-based medical histories into a secure, mobile cloud. 
+                Aggregating paper-based medical histories into a secure, mobile cloud.
                 Providing 1,200+ veterinarians with digital intelligence and verified pet owner access.
               </p>
               <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -117,12 +117,12 @@ export default function Landing() {
                   Get Started
                 </Link>
               </div>
-              
+
               <div className="flex items-center gap-6 pt-8 border-t border-zinc-100">
-                 <div className="flex -space-x-2">
-                    {[1,2,3].map(i => <div key={i} className="size-6 rounded-full border-2 border-white bg-zinc-100" />)}
-                 </div>
-                 <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-tight">Trusted by leading regional networks</p>
+                <div className="flex -space-x-2">
+                  {[1, 2, 3].map(i => <div key={i} className="size-6 rounded-full border-2 border-white bg-zinc-100" />)}
+                </div>
+                <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-tight">Trusted by leading regional networks</p>
               </div>
             </div>
 
@@ -141,11 +141,11 @@ export default function Landing() {
         </section>
 
         {/* Dynamic Spotlight Section - Tightened */}
-        <section  
+        <section
           className="relative w-full flex justify-center py-12 overflow-hidden z-[110] bg-zinc-50/50"
         >
-          <div 
-            style={{ 
+          <div
+            style={{
               width: `${94 + (scrollProgress * 6)}%`,
               height: `${60 + (scrollProgress * 20)}vh`,
               borderRadius: `${1.5 * (1 - scrollProgress)}rem`,
@@ -179,20 +179,20 @@ export default function Landing() {
               <h3 className="text-3xl font-semibold tracking-tightest leading-none">Built for scale.</h3>
               <p className="text-sm text-zinc-500 font-medium leading-relaxed">Optimization metrics from Algiers' top tier veterinary clinics.</p>
               <div className="pt-4 flex flex-col gap-3">
-                 <div className="flex justify-between p-3 bg-zinc-50 rounded-lg border border-zinc-100">
-                    <span className="text-xs font-bold text-zinc-400 uppercase">Growth</span>
-                    <span className="text-xs font-bold text-emerald-600">+42%</span>
-                 </div>
-                 <div className="flex justify-between p-3 bg-zinc-50 rounded-lg border border-zinc-100">
-                    <span className="text-xs font-bold text-zinc-400 uppercase">Retention</span>
-                    <span className="text-xs font-bold text-emerald-600">98%</span>
-                 </div>
+                <div className="flex justify-between p-3 bg-zinc-50 rounded-lg border border-zinc-100">
+                  <span className="text-xs font-bold text-zinc-400 uppercase">Growth</span>
+                  <span className="text-xs font-bold text-emerald-600">+42%</span>
+                </div>
+                <div className="flex justify-between p-3 bg-zinc-50 rounded-lg border border-zinc-100">
+                  <span className="text-xs font-bold text-zinc-400 uppercase">Retention</span>
+                  <span className="text-xs font-bold text-emerald-600">98%</span>
+                </div>
               </div>
             </div>
 
             {[
               { title: 'Clinical Intelligence', icon: BarChart3, val: '12h', desc: 'Saved per vet weekly.' },
-              { title: 'Verified Network', icon: ShieldCheck, val: '58', desc: 'Wilayas active in DZ.' }
+              { title: 'Verified Network', icon: ShieldCheck, val: '68', desc: 'Wilayas active in DZ.' }
             ].map((card, i) => (
               <div key={i} className="p-8 bg-white border border-zinc-200 rounded-xl shadow-sm hover:border-emerald-500/30 transition-all">
                 <card.icon className="size-6 text-zinc-900 mb-6" />
@@ -206,38 +206,38 @@ export default function Landing() {
 
         {/* Map Section - Integrated & Compact */}
         <section id="map" className="border-y border-zinc-100 bg-zinc-50/40">
-           <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 items-center">
-              <div className="py-16 md:py-24 space-y-6">
-                 <div className="inline-flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-2 py-0.5 bg-zinc-100 rounded border border-zinc-200">
-                    <Globe size={12} /> Regional Operations
-                 </div>
-                 <h2 className="text-4xl font-semibold tracking-tightest text-zinc-900">Algeria's digital health frontier.</h2>
-                 <p className="text-sm text-zinc-500 font-medium max-w-sm leading-relaxed">We are aggressively onboarding clinics in rural and urban areas to bridge the veterinary healthcare gap.</p>
-                 
-                 <div className="flex flex-wrap gap-4 pt-4">
-                  <Button className="px-8 py-4 text-lg">
-                     Get Started Now
-                  </Button>
-                  <Button variant="outline" className="px-8 py-4 text-lg bg-white/50 backdrop-blur-sm">
-                     Our Specialists
-                  </Button>
-               </div>
-                 <div className="grid grid-cols-2 gap-4 pt-6">
-                    <div className="space-y-1 border-l border-emerald-500 pl-4">
-                       <div className="text-xl font-bold">1,200+</div>
-                       <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-tighter">Verified Clinicians</div>
-                    </div>
-                    <div className="space-y-1 border-l border-zinc-200 pl-4">
-                       <div className="text-xl font-bold">58/58</div>
-                       <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-tighter">Regional Coverage</div>
-                    </div>
-                 </div>
+          <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 items-center">
+            <div className="py-16 md:py-24 space-y-6">
+              <div className="inline-flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-2 py-0.5 bg-zinc-100 rounded border border-zinc-200">
+                <Globe size={12} /> Regional Operations
               </div>
-              <div className="relative group">
-                  <div className="absolute -inset-4 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all duration-700" />
-                  <AlgeriaMap className="relative w-full h-full max-h-[550px] [&_path]:fill-zinc-300 [&_path]:stroke-white hover:[&_path]:fill-emerald-600 transition-all duration-500 cursor-pointer drop-shadow-2xl" />
+              <h2 className="text-4xl font-semibold tracking-tightest text-zinc-900">Algeria's digital health frontier.</h2>
+              <p className="text-sm text-zinc-500 font-medium max-w-sm leading-relaxed">We are aggressively onboarding clinics in rural and urban areas to bridge the veterinary healthcare gap.</p>
+
+              <div className="flex flex-wrap gap-4 pt-4">
+                <Button className="px-8 py-4 text-lg">
+                  Get Started Now
+                </Button>
+                <Button variant="outline" className="px-8 py-4 text-lg bg-white/50 backdrop-blur-sm">
+                  Our Specialists
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-4 pt-6">
+                <div className="space-y-1 border-l border-emerald-500 pl-4">
+                  <div className="text-xl font-bold">1,200+</div>
+                  <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-tighter">Verified Clinicians</div>
                 </div>
-           </div>
+                <div className="space-y-1 border-l border-zinc-200 pl-4">
+                  <div className="text-xl font-bold">68/68</div>
+                  <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-tighter">Regional Coverage</div>
+                </div>
+              </div>
+            </div>
+            <div className="relative group">
+              <div className="absolute -inset-4 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all duration-700" />
+              <AlgeriaMap className="relative w-full h-full max-h-[550px] [&_path]:fill-zinc-300 [&_path]:stroke-white hover:[&_path]:fill-emerald-600 transition-all duration-500 cursor-pointer drop-shadow-2xl" />
+            </div>
+          </div>
         </section>
 
         {/* Community Marquee - Smaller & Faster */}
@@ -272,20 +272,20 @@ export default function Landing() {
 
         {/* Feature Matrix - Compact Icons */}
         <section ref={featuresRef} className="max-w-7xl mx-auto px-4 py-20">
-           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { t: 'Interpretable Records', d: 'Global health mobility.', i: Database },
-                { t: 'Verification', d: 'Checked clinical licenses.', i: ShieldCheck },
-                { t: 'Steerable Search', d: 'Wilaya-based filtering.', i: Search },
-                { t: 'Automation', d: 'SMS appointment reminders.', i: Zap }
-              ].map((f, i) => (
-                <div key={i} className="p-5 border border-zinc-100 rounded-xl hover:bg-zinc-50/50 transition-all animate-on-scroll">
-                   <f.i className="size-5 text-emerald-600 mb-4" strokeWidth={2} />
-                   <h4 className="text-[13px] font-bold text-zinc-900 tracking-tight">{f.t}</h4>
-                   <p className="text-[11px] text-zinc-500 mt-1 font-medium leading-tight">{f.d}</p>
-                </div>
-              ))}
-           </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { t: 'Interpretable Records', d: 'Global health mobility.', i: Database },
+              { t: 'Verification', d: 'Checked clinical licenses.', i: ShieldCheck },
+              { t: 'Steerable Search', d: 'Wilaya-based filtering.', i: Search },
+              { t: 'Automation', d: 'SMS appointment reminders.', i: Zap }
+            ].map((f, i) => (
+              <div key={i} className="p-5 border border-zinc-100 rounded-xl hover:bg-zinc-50/50 transition-all animate-on-scroll">
+                <f.i className="size-5 text-emerald-600 mb-4" strokeWidth={2} />
+                <h4 className="text-[13px] font-bold text-zinc-900 tracking-tight">{f.t}</h4>
+                <p className="text-[11px] text-zinc-500 mt-1 font-medium leading-tight">{f.d}</p>
+              </div>
+            ))}
+          </div>
         </section>
       </main>
 
@@ -294,30 +294,30 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-12 gap-12 pb-16">
             <div className="md:col-span-4 space-y-4">
-               <span className="font-bold text-sm tracking-tightest">Vetocare</span>
-               <p className="text-xs text-zinc-500 font-medium max-w-xs leading-relaxed"> Frontier digital infrastructure for Algerian veterinary clinics and pet owners.</p>
+              <span className="font-bold text-sm tracking-tightest">Vetocare</span>
+              <p className="text-xs text-zinc-500 font-medium max-w-xs leading-relaxed"> Frontier digital infrastructure for Algerian veterinary clinics and pet owners.</p>
             </div>
             <div className="md:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-8">
-                <div className="space-y-3">
-                  <h5 className="text-[10px] font-bold text-zinc-900 uppercase tracking-widest">Network</h5>
-                  <ul className="text-[12px] text-zinc-500 space-y-2 font-medium">
-                     <li className="hover:text-emerald-600 cursor-pointer">Find Clinic</li>
-                     <li>
-                        <Link to="/register" className="hover:text-emerald-600">Join as a Professional</Link>
-                     </li>
-                  </ul>
-               </div>
-               <div className="space-y-3">
-                  <h5 className="text-[10px] font-bold text-zinc-900 uppercase tracking-widest">Connect</h5>
-                  <div className="flex gap-3 text-zinc-400">
-                    <Mail size={16} className="hover:text-zinc-900" />
-                    <Globe size={16} className="hover:text-zinc-900" />
-                  </div>
-               </div>
-               <div className="col-span-2 sm:col-span-1 space-y-3">
-                  <h5 className="text-[10px] font-bold text-zinc-900 uppercase tracking-widest">Legal</h5>
-                  <p className="text-[11px] text-zinc-400 font-medium tracking-tight">© 2024 Vetocare Algeria PBC.</p>
-               </div>
+              <div className="space-y-3">
+                <h5 className="text-[10px] font-bold text-zinc-900 uppercase tracking-widest">Network</h5>
+                <ul className="text-[12px] text-zinc-500 space-y-2 font-medium">
+                  <li className="hover:text-emerald-600 cursor-pointer">Find Clinic</li>
+                  <li>
+                    <Link to="/register" className="hover:text-emerald-600">Join as a Professional</Link>
+                  </li>
+                </ul>
+              </div>
+              <div className="space-y-3">
+                <h5 className="text-[10px] font-bold text-zinc-900 uppercase tracking-widest">Connect</h5>
+                <div className="flex gap-3 text-zinc-400">
+                  <Mail size={16} className="hover:text-zinc-900" />
+                  <Globe size={16} className="hover:text-zinc-900" />
+                </div>
+              </div>
+              <div className="col-span-2 sm:col-span-1 space-y-3">
+                <h5 className="text-[10px] font-bold text-zinc-900 uppercase tracking-widest">Legal</h5>
+                <p className="text-[11px] text-zinc-400 font-medium tracking-tight">© 2026 Vetocare Algeria PBC.</p>
+              </div>
             </div>
           </div>
         </div>

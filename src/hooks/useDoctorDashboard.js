@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { toast } from 'react-hot-toast';
 
@@ -13,10 +13,11 @@ export const useDoctorDashboard = () => {
   const [recentPatients, setRecentPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const isInitialFetch = useRef(true);
 
-  const fetchAll = async () => {
+  const fetchAll = useCallback(async (isSilent = false) => {
     try {
-      setLoading(true);
+      if (!isSilent) setLoading(true);
 
       // Today's date range
       const todayStart = new Date();
@@ -84,9 +85,10 @@ export const useDoctorDashboard = () => {
       setError(err.message);
       toast.error('Failed to load dashboard data.');
     } finally {
-      setLoading(false);
+      if (!isSilent) setLoading(false);
+      isInitialFetch.current = false;
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchAll();
@@ -94,19 +96,19 @@ export const useDoctorDashboard = () => {
     // Real-time subscriptions
     const petsChannel = supabase
       .channel('doctor_dashboard_pets')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'pets' }, fetchAll)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pets' }, () => fetchAll(true))
       .subscribe();
 
     const appointmentsChannel = supabase
       .channel('doctor_dashboard_appointments')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, fetchAll)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, () => fetchAll(true))
       .subscribe();
 
     return () => {
-      petsChannel.unsubscribe();
-      appointmentsChannel.unsubscribe();
+      supabase.removeChannel(petsChannel);
+      supabase.removeChannel(appointmentsChannel);
     };
-  }, []);
+  }, [fetchAll]);
 
   return { stats, todaySchedule, previousAppointments, recentPatients, loading, error };
 };

@@ -6,6 +6,7 @@ import EmptyState from '../../components/common/EmptyState';
 import { usePets } from '../../hooks/usePets';
 import { SkeletonCard } from '../../components/common/Skeleton';
 import { petService } from '../../services/petService';
+import { supabase } from '../../lib/supabase';
 import { toast } from 'react-hot-toast';
 import '../../styles/pages/dashboard.css';
 
@@ -13,6 +14,7 @@ const MyPets = () => {
   const { pets, loading: isLoading, removePetFromState, addPetToState } = usePets();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -25,6 +27,42 @@ const MyPets = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file.');
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+      const filePath = `pets/${fileName}`;
+
+      const { data, error } = await supabase.storage
+        .from('medical-files') // Reusing existing bucket or use 'pets' if it exists
+        .upload(filePath, file);
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('medical-files')
+        .getPublicUrl(filePath);
+
+      setFormData(prev => ({ ...prev, image_url: publicUrl }));
+      toast.success('Image uploaded successfully!');
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Failed to upload image.');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -187,8 +225,51 @@ const MyPets = () => {
                 </div>
               </div>
               <div className="form-group settings-col-span-2">
-                <label className="form-label">Image URL (Optional)</label>
-                <input type="url" name="image_url" className="form-input" placeholder="https://example.com/image.jpg" value={formData.image_url} onChange={handleInputChange} />
+                <label className="form-label">Pet Image</label>
+                <div className="flex flex-col gap-2">
+                  {formData.image_url ? (
+                    <div className="relative w-full h-32 rounded-xl overflow-hidden border border-zinc-200 group">
+                      <img src={formData.image_url} alt="Pet preview" className="w-full h-full object-cover" />
+                      <button 
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, image_url: '' }))}
+                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="relative">
+                      <input
+                        type="file"
+                        id="pet-image-upload"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleFileUpload}
+                        disabled={isUploading}
+                      />
+                      <label
+                        htmlFor="pet-image-upload"
+                        className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all ${
+                          isUploading ? 'bg-zinc-50 border-zinc-200' : 'bg-zinc-50 border-zinc-200 hover:border-emerald-500 hover:bg-emerald-50/30'
+                        }`}
+                      >
+                        {isUploading ? (
+                          <div className="flex flex-col items-center gap-2">
+                            <Loader2 className="animate-spin text-emerald-600" size={24} />
+                            <span className="text-xs text-zinc-500 font-medium">Uploading...</span>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center gap-2">
+                            <Plus className="text-zinc-400" size={24} />
+                            <span className="text-xs text-zinc-500 font-medium text-center px-4">Click to upload pet photo</span>
+                            <span className="text-[10px] text-zinc-400">JPG, PNG, WEBP up to 5MB</span>
+                          </div>
+                        )}
+                      </label>
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="flex gap-4 mt-6 justify-end">
                 <Button variant="outline" type="button" onClick={() => setIsModalOpen(false)} disabled={isSubmitting}>Cancel</Button>

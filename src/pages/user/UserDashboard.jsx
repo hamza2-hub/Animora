@@ -26,11 +26,10 @@ const UserDashboard = () => {
 
   const location = useLocation();
 
+  // Load doctors eagerly so the dropdown is populated when the modal opens
   useEffect(() => {
-    if (isModalOpen && doctors.length === 0) {
-      appointmentService.getDoctors().then(data => setDoctors(data)).catch(console.error);
-    }
-  }, [isModalOpen, doctors.length]);
+    appointmentService.getDoctors().then(data => setDoctors(data || [])).catch(console.error);
+  }, []);
 
   useEffect(() => {
     if (location.state?.openAppointmentModal) {
@@ -87,6 +86,7 @@ const UserDashboard = () => {
       }
 
       const payload = { ...formData, files: fileRecords };
+      // Keep doctor_id as null only if user explicitly left it blank (not preselected)
       if (payload.doctor_id === '') payload.doctor_id = null;
 
       await appointmentService.createAppointment(payload);
@@ -204,7 +204,14 @@ const UserDashboard = () => {
 
               {/* Doctor */}
               <div className="form-group">
-                <label className="form-label">Select Doctor (Optional)</label>
+                <label className="form-label">
+                  Select Doctor
+                  {formData.doctor_id && doctors.find(d => d.id === formData.doctor_id) && (
+                    <span className="ml-2 text-xs font-semibold text-primary bg-primary-light px-2 py-0.5 rounded-full">
+                      Preselected: Dr. {doctors.find(d => d.id === formData.doctor_id)?.full_name}
+                    </span>
+                  )}
+                </label>
                 <select name="doctor_id" className="form-input" value={formData.doctor_id} onChange={handleInputChange}>
                   <option value="">Any Available Doctor</option>
                   {doctors.map(doc => (
