@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import AlgeriaMap from '../components/common/AlgeriaMap';
 import Button from '../components/common/Button';
+import Logo from '../components/common/Logo';
 
 export default function Landing() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -69,9 +70,7 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 h-[56px] flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2 group transition-transform active:scale-95">
-              <div className="size-6 bg-emerald-600 rounded-md flex items-center justify-center shadow-sm">
-                <PawPrint size={14} className="text-white" />
-              </div>
+              <Logo size={24} />
               <span className="font-bold text-sm tracking-tightest">Vetocare</span>
             </Link>
             <div className="hidden md:flex items-center gap-5 text-[12px] font-semibold text-zinc-500">
@@ -295,9 +294,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-12 gap-12 pb-16">
             <div className="md:col-span-4 space-y-4">
                <div className="flex items-center gap-2">
-                 <div className="size-6 bg-emerald-600 rounded-md flex items-center justify-center shadow-sm">
-                   <PawPrint size={14} className="text-white" />
-                 </div>
+                 <Logo size={24} />
                  <span className="font-bold text-sm tracking-tightest">Vetocare</span>
                </div>
                <p className="text-xs text-zinc-500 font-medium max-w-xs leading-relaxed"> Frontier digital infrastructure for Algerian veterinary clinics and pet owners.</p>

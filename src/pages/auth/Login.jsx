@@ -5,6 +5,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { supabase } from '../../lib/supabase';
 import Button from '../../components/common/Button';
 import toast from 'react-hot-toast';
+import Logo from '../../components/common/Logo';
 import '../../styles/pages/auth.css';
 
 const Login = () => {
@@ -73,9 +74,7 @@ const Login = () => {
       <div className="auth-form-panel">
         <div className="auth-card auth-panel-enter">
           <div className="auth-header">
-            <div className="auth-logo">
-              <PawPrint size={36} />
-            </div>
+            <Logo size={64} className="mx-auto mb-4" />
             <h2 className="auth-title">Welcome Back</h2>
             <p className="auth-subtitle">Sign in to your Vetocare account</p>
           </div>

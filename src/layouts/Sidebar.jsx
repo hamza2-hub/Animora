@@ -6,6 +6,7 @@ import {
   UserCheck, Syringe, FileText, 
   BarChart2, Menu, X, PawPrint, LogOut, Search, UserCircle
 } from 'lucide-react';
+import Logo from '../components/common/Logo';
 import '../styles/layout/layout.css';
 
 const doctorLinks = [
@@ -36,9 +37,7 @@ const Sidebar = ({ isCollapsed, toggleSidebar }) => {
     <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header flex items-center justify-center">
         <div className="brand flex items-center gap-2">
-          <div className="logo-wrapper">
-            <PawPrint className="logo-icon" size={28} />
-          </div>
+          <Logo size={32} />
           {!isCollapsed && <h2 className="brand-text animate-fade-in">Vetocare</h2>}
         </div>
       </div>

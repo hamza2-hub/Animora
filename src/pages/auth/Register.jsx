@@ -4,6 +4,7 @@ import { PawPrint, User, Stethoscope, Loader2, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth';
 import Button from '../../components/common/Button';
 import toast from 'react-hot-toast';
+import Logo from '../../components/common/Logo';
 import '../../styles/pages/auth.css';
 
 const Register = () => {
@@ -56,9 +57,7 @@ const Register = () => {
       <div className="auth-form-panel">
         <div className="auth-card auth-panel-enter">
           <div className="auth-header" style={{ marginBottom: '1.5rem' }}>
-            <div className="auth-logo" style={{ padding: '0.75rem', marginBottom: '0.5rem' }}>
-              <PawPrint size={28} />
-            </div>
+            <Logo size={56} className="mx-auto mb-4" />
             <h2 className="auth-title" style={{ fontSize: '1.5rem' }}>Create Account</h2>
           </div>
 
