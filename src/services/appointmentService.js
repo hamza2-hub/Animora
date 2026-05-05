@@ -44,6 +44,17 @@ export const appointmentService = {
       .single();
 
     if (error) throw error;
+
+    // Send notification to the selected doctor
+    if (data.doctor_id) {
+      await supabase.from('notifications').insert([{
+        user_id: data.doctor_id,
+        title: 'New Appointment Request',
+        message: 'A pet owner has requested a new appointment with you.',
+        type: 'info'
+      }]);
+    }
+
     return data;
   },
 
@@ -81,10 +92,22 @@ export const appointmentService = {
       .from('appointments')
       .update(payload)
       .eq('id', appointmentId)
-      .select()
+      .select('*, doctor:profiles!doctor_id(full_name)')
       .single();
 
     if (error) throw error;
+
+    // Send notification to the pet owner about the status update
+    if (data.owner_id) {
+      const docName = data.doctor?.full_name || 'A doctor';
+      await supabase.from('notifications').insert([{
+        user_id: data.owner_id,
+        title: 'Appointment Status Updated',
+        message: `${docName} updated your appointment status to: ${status.replace('_', ' ')}.`,
+        type: status === 'confirmed' ? 'success' : (status === 'cancelled' ? 'error' : 'info')
+      }]);
+    }
+
     return data;
   },
 };
