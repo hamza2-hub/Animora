@@ -68,18 +68,20 @@ CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING
 
 -- Pets Policies
 CREATE POLICY "Users can manage own pets" ON public.pets FOR ALL USING (auth.uid() = owner_id);
-CREATE POLICY "Doctors can view all pets" ON public.pets FOR SELECT USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'doctor'));
+CREATE POLICY "Doctors can view their patients pets" ON public.pets FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.appointments WHERE appointments.pet_id = pets.id AND appointments.doctor_id = auth.uid())
+);
 
 -- Appointments Policies
 CREATE POLICY "Users can manage own appointments" ON public.appointments FOR ALL USING (auth.uid() = owner_id);
-CREATE POLICY "Doctors can manage assigned appointments" ON public.appointments FOR ALL USING (auth.uid() = doctor_id OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'doctor'));
+CREATE POLICY "Doctors can manage their assigned appointments" ON public.appointments FOR ALL USING (auth.uid() = doctor_id);
 
 -- Medical Records Policies
-CREATE POLICY "Users can view own pets records" ON public.medical_records FOR SELECT USING (
-  EXISTS (SELECT 1 FROM public.pets WHERE id = medical_records.pet_id AND owner_id = auth.uid())
+CREATE POLICY "Users can manage own pets records" ON public.medical_records FOR ALL USING (
+  EXISTS (SELECT 1 FROM public.pets WHERE pets.id = medical_records.pet_id AND pets.owner_id = auth.uid())
 );
-CREATE POLICY "Doctors can manage all records" ON public.medical_records FOR ALL USING (
-  EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'doctor')
+CREATE POLICY "Doctors can manage records of their patients" ON public.medical_records FOR ALL USING (
+  EXISTS (SELECT 1 FROM public.appointments WHERE appointments.pet_id = medical_records.pet_id AND appointments.doctor_id = auth.uid())
 );
 
 -- 3. Auto Profile Creation (Trigger)

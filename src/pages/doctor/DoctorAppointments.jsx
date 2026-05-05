@@ -4,6 +4,7 @@ import { CalendarCheck, Clock, History, Search, X } from 'lucide-react';
 import AppointmentCard from '../../components/doctor/AppointmentCard';
 import AppointmentEmptyState from '../../components/doctor/AppointmentEmptyState';
 import AppointmentDetailsModal from '../../components/doctor/AppointmentDetailsModal';
+import { appointmentService } from '../../services/appointmentService';
 import { supabase } from '../../lib/supabase';
 import '../../styles/pages/dashboard.css';
 import '../../styles/pages/appointments.css';
@@ -19,17 +20,11 @@ const DoctorAppointments = () => {
   const fetchAppointments = async (isSilent = false) => {
     try {
       if (!isSilent) setLoading(true);
-      // Get the current auth user directly (same as RLS uses internally)
+      
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data, error } = await supabase
-        .from('appointments')
-        .select('*, pets(name, type, breed, age), owner:profiles!owner_id(full_name)')
-        .or(`doctor_id.eq.${user.id},doctor_id.is.null`)
-        .order('date', { ascending: false });
-
-      if (error) throw error;
+      const data = await appointmentService.getAppointmentsForVet(user.id);
       setAllAppointments(data || []);
 
       if (selectedAppointment) {

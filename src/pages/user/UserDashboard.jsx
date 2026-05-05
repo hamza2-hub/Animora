@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, FileText, HelpCircle, Heart, Calendar, Activity } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Button from '../../components/common/Button';
 import PetCard from '../../components/common/PetCard';
 import StatCard from '../../components/common/StatCard';
@@ -12,14 +13,15 @@ import '../../styles/pages/dashboard.css';
 
 const UserDashboard = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { pets, loading: petsLoading } = usePets();
   const { appointments, loading: aptsLoading, refetch: refetchApts } = useAppointments();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const stats = [
-    { title: 'My Pets', value: pets.length, icon: Heart, colorClass: 'primary' },
-    { title: 'Upcoming', value: appointments.filter(a => a.status === 'confirmed').length, icon: Calendar, colorClass: 'primary' },
-    { title: 'Pending', value: appointments.filter(a => a.status === 'pending').length, icon: Activity, colorClass: 'primary' },
+    { title: t('dashboard.stats.my_pets'), value: pets.length, icon: Heart, colorClass: 'primary' },
+    { title: t('dashboard.stats.upcoming'), value: appointments.filter(a => a.status === 'confirmed').length, icon: Calendar, colorClass: 'primary' },
+    { title: t('dashboard.stats.pending'), value: appointments.filter(a => a.status === 'pending').length, icon: Activity, colorClass: 'primary' },
   ];
 
   const recentRequests = appointments.slice(0, 5);
@@ -29,12 +31,12 @@ const UserDashboard = () => {
       {/* Header */}
       <div className="dashboard-header flex justify-between items-center hide-mobile">
         <div>
-          <h1 className="dashboard-title">My Dashboard</h1>
-          <p className="dashboard-subtitle">Manage your pets and upcoming activities</p>
+          <h1 className="dashboard-title">{t('dashboard.title')}</h1>
+          <p className="dashboard-subtitle">{t('dashboard.subtitle')}</p>
         </div>
         <button className="btn-primary flex items-center gap-2" onClick={() => setIsModalOpen(true)}>
           <Plus size={18} />
-          <span>Create New Request</span>
+          <span>{t('dashboard.create_request')}</span>
         </button>
       </div>
 
@@ -53,8 +55,8 @@ const UserDashboard = () => {
         {/* Pets Section */}
         <div className="section-card">
           <div className="section-header">
-            <h2 className="section-title">Quick Overview</h2>
-            <button className="btn-text" onClick={() => navigate('/dashboard/pets')}>View All Pets</button>
+            <h2 className="section-title">{t('dashboard.quick_overview')}</h2>
+            <button className="btn-text" onClick={() => navigate('/dashboard/pets')}>{t('dashboard.view_all_pets')}</button>
           </div>
           
           <div className="pets-grid-compact mt-4">
@@ -62,8 +64,8 @@ const UserDashboard = () => {
               <><SkeletonCard /><SkeletonCard /></>
             ) : pets.length === 0 ? (
               <div className="empty-state">
-                <p>No pets registered yet.</p>
-                <button className="btn-outline mt-2" onClick={() => navigate('/dashboard/pets')}>Add your first pet</button>
+                <p>{t('dashboard.no_pets')}</p>
+                <button className="btn-outline mt-2" onClick={() => navigate('/dashboard/pets')}>{t('dashboard.add_first_pet')}</button>
               </div>
             ) : (
               pets.slice(0, 2).map(pet => (
@@ -88,23 +90,23 @@ const UserDashboard = () => {
         {/* Requests Section */}
         <div className="section-card">
           <div className="section-header">
-            <h2 className="section-title">Recent Requests</h2>
+            <h2 className="section-title">{t('dashboard.recent_requests')}</h2>
             <div className="icon-button" onClick={() => navigate('/dashboard/appointments')}><FileText size={20} /></div>
           </div>
 
           <div className="flex flex-col gap-3 mt-4">
             {aptsLoading ? (
-              <p className="text-muted">Loading requests...</p>
+              <p className="text-muted">{t('dashboard.loading_requests')}</p>
             ) : recentRequests.length === 0 ? (
               <div className="text-center py-8">
                 <HelpCircle size={40} className="mx-auto text-zinc-200 mb-2" />
-                <p className="text-muted">No recent requests found.</p>
+                <p className="text-muted">{t('dashboard.no_recent_requests')}</p>
               </div>
             ) : (
               recentRequests.map((req) => (
                 <div key={req.id} className="request-item" onClick={() => navigate('/dashboard/appointments')} style={{ cursor: 'pointer' }}>
                   <div className="flex-1">
-                    <h4 className="font-bold text-sm">{req.notes || 'General Checkup'}</h4>
+                    <h4 className="font-bold text-sm">{req.notes || t('dashboard.general_checkup')}</h4>
                     <p className="text-muted text-xs">
                       {new Date(req.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       {req.doctor?.full_name && ` • Dr. ${req.doctor.full_name}`}
@@ -122,7 +124,7 @@ const UserDashboard = () => {
             className="w-full mt-4 btn-primary-alt"
             onClick={() => setIsModalOpen(true)}
           >
-            Create New Request
+            {t('dashboard.create_request')}
           </button>
         </div>
       </div>

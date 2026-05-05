@@ -1,0 +1,42 @@
+{
+  "navbar": {
+    "search": "Search anything...",
+    "add_patient": "Add Patient",
+    "notifications": "Notifications",
+    "mark_read": "Mark all read",
+    "no_notifications": "No notifications yet",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "my_pets": "My Pets",
+    "appointments": "Appointments",
+    "find_doctor": "Find a Doctor",
+    "medical_records": "Medical Records",
+    "patients": "My Patients",
+    "pet_owners": "My Clients",
+    "vaccinations": "Vaccinations",
+    "analytics": "Analytics",
+    "help": "Help Center"
+  },
+  "dashboard": {
+    "title": "My Dashboard",
+    "subtitle": "Manage your pets and upcoming activities",
+    "create_request": "Create New Request",
+    "stats": {
+      "my_pets": "My Pets",
+      "upcoming": "Upcoming",
+      "pending": "Pending"
+    },
+    "quick_overview": "Quick Overview",
+    "view_all_pets": "View All Pets",
+    "no_pets": "No pets registered yet.",
+    "add_first_pet": "Add your first pet",
+    "recent_requests": "Recent Requests",
+    "loading_requests": "Loading requests...",
+    "no_recent_requests": "No recent requests found.",
+    "general_checkup": "General Checkup"
+  }
+}

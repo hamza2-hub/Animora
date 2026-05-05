@@ -1,0 +1,42 @@
+{
+  "navbar": {
+    "search": "Rechercher...",
+    "add_patient": "Ajouter Patient",
+    "notifications": "Notifications",
+    "mark_read": "Tout marquer comme lu",
+    "no_notifications": "Pas encore de notifications",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
+  },
+  "sidebar": {
+    "dashboard": "Tableau de Bord",
+    "my_pets": "Mes Animaux",
+    "appointments": "Rendez-vous",
+    "find_doctor": "Trouver un Vétérinaire",
+    "medical_records": "Dossiers Médicaux",
+    "patients": "Mes Patients",
+    "pet_owners": "Mes Clients",
+    "vaccinations": "Vaccinations",
+    "analytics": "Analytiques",
+    "help": "Centre d'Aide"
+  },
+  "dashboard": {
+    "title": "Mon Tableau de Bord",
+    "subtitle": "Gérez vos animaux et vos activités à venir",
+    "create_request": "Créer une Demande",
+    "stats": {
+      "my_pets": "Mes Animaux",
+      "upcoming": "À venir",
+      "pending": "En attente"
+    },
+    "quick_overview": "Aperçu Rapide",
+    "view_all_pets": "Voir Tout",
+    "no_pets": "Aucun animal enregistré.",
+    "add_first_pet": "Ajouter votre premier animal",
+    "recent_requests": "Demandes Récentes",
+    "loading_requests": "Chargement des demandes...",
+    "no_recent_requests": "Aucune demande récente.",
+    "general_checkup": "Consultation Générale"
+  }
+}

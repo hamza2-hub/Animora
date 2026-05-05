@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Menu, Search, Bell, Plus, User, Settings, LogOut, X, Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Menu, Search, Bell, Plus, User, Settings, LogOut, X, Check, Globe } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useNotifications } from '../hooks/useNotifications';
 import Button from '../components/common/Button';
@@ -8,6 +9,7 @@ import { toast } from 'react-hot-toast';
 import '../styles/layout/layout.css';
 
 const Navbar = ({ toggleSidebar }) => {
+  const { t, i18n } = useTranslation();
   const { user, profile, logout } = useAuth();
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
   const userRole = profile?.role || 'user';
@@ -44,7 +46,11 @@ const Navbar = ({ toggleSidebar }) => {
   const handleNotificationClick = (notif) => {
     if (!notif.read) markAsRead(notif.id);
     setIsNotificationsOpen(false);
-    // Could navigate to notif.link here if implemented
+  };
+
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'en' ? 'fr' : 'en';
+    i18n.changeLanguage(newLang);
   };
 
   return (
@@ -55,17 +61,28 @@ const Navbar = ({ toggleSidebar }) => {
         </button>
         <div className="search-bar-wrapper">
           <Search size={18} className="search-icon" />
-          <input type="text" placeholder="Search anything..." className="search-input" />
+          <input type="text" placeholder={t('navbar.search')} className="search-input" />
         </div>
       </div>
 
       <div className="navbar-right flex items-center gap-4">
         {userRole === 'doctor' && (
           <Button variant="primary" className="add-btn hide-mobile" onClick={() => setIsModalOpen(true)}>
-            <Plus size={18} /> Add Patient
+            <Plus size={18} /> {t('navbar.add_patient')}
           </Button>
         )}
         
+        <button 
+          className="notification-btn hover-bg"
+          onClick={toggleLanguage}
+          title="Toggle Language / Changer de langue"
+        >
+          <Globe size={22} />
+          <span className="absolute -bottom-1 -right-1 text-[10px] font-bold bg-zinc-100 rounded-sm px-1 border border-zinc-200">
+            {i18n.language.toUpperCase()}
+          </span>
+        </button>
+
         <div className="relative" ref={notifDropdownRef}>
           <button 
             className="notification-btn hover-bg relative"
@@ -82,13 +99,13 @@ const Navbar = ({ toggleSidebar }) => {
           {isNotificationsOpen && (
             <div className="dropdown-menu" style={{ width: '320px', right: '-60px' }}>
               <div className="flex justify-between items-center px-4 py-3 border-b border-zinc-100">
-                <h3 className="font-bold text-sm">Notifications</h3>
+                <h3 className="font-bold text-sm">{t('navbar.notifications')}</h3>
                 {unreadCount > 0 && (
                   <button 
                     onClick={(e) => { e.stopPropagation(); markAllAsRead(); }}
                     className="text-xs text-emerald-600 font-semibold hover:text-emerald-700 flex items-center gap-1"
                   >
-                    <Check size={14} /> Mark all read
+                    <Check size={14} /> {t('navbar.mark_read')}
                   </button>
                 )}
               </div>
@@ -96,7 +113,7 @@ const Navbar = ({ toggleSidebar }) => {
               <div className="max-h-[300px] overflow-y-auto">
                 {notifications.length === 0 ? (
                   <div className="p-6 text-center text-zinc-500 text-sm">
-                    No notifications yet
+                    {t('navbar.no_notifications')}
                   </div>
                 ) : (
                   notifications.map(notif => (
@@ -132,7 +149,7 @@ const Navbar = ({ toggleSidebar }) => {
           >
             <div className="profile-info text-right hide-mobile">
               <p className="profile-name">{fullName}</p>
-              <p className="profile-role text-muted text-sm capitalize">{userRole}</p>
+              <p className="profile-role text-muted text-sm capitalize">{userRole === 'doctor' ? 'Veterinarian' : 'Pet Owner'}</p>
             </div>
             <div className="avatar">
               {fullName.charAt(0)}
@@ -145,17 +162,17 @@ const Navbar = ({ toggleSidebar }) => {
                 className="dropdown-item" 
                 onClick={() => { setIsProfileOpen(false); setSettingsTab('profile'); setIsSettingsModalOpen(true); }}
               >
-                <User size={18} /> Profile
+                <User size={18} /> {t('navbar.profile')}
               </button>
               <button 
                 className="dropdown-item" 
                 onClick={() => { setIsProfileOpen(false); setSettingsTab('preferences'); setIsSettingsModalOpen(true); }}
               >
-                <Settings size={18} /> Settings
+                <Settings size={18} /> {t('navbar.settings')}
               </button>
               <div style={{ height: '1px', backgroundColor: 'var(--border)', margin: '0.5rem 0' }}></div>
               <button className="dropdown-item danger" onClick={logout}>
-                <LogOut size={18} /> Logout
+                <LogOut size={18} /> {t('navbar.logout')}
               </button>
             </div>
           )}
