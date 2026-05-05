@@ -38,5 +38,43 @@
     "loading_requests": "Loading requests...",
     "no_recent_requests": "No recent requests found.",
     "general_checkup": "General Checkup"
+  },
+  "pets": {
+    "title": "My Pets",
+    "subtitle": "View and manage your registered pets",
+    "all_pets": "All Pets",
+    "register": "Register Pet",
+    "no_pets_title": "No pets yet",
+    "no_pets_message": "You haven't registered any pets yet. Add your first furry friend to get started! 🐾",
+    "form": {
+      "title": "Register New Pet",
+      "name": "Pet Name",
+      "name_placeholder": "e.g. Bella",
+      "type": "Animal Type",
+      "type_placeholder": "e.g. Dog, Cat, Bird",
+      "breed": "Breed (Optional)",
+      "breed_placeholder": "e.g. Golden Retriever",
+      "age": "Age in Years (Optional)",
+      "age_placeholder": "e.g. 5",
+      "image": "Pet Image",
+      "uploading": "Uploading...",
+      "upload_click": "Click to upload pet photo",
+      "upload_limit": "JPG, PNG, WEBP up to 5MB",
+      "cancel": "Cancel",
+      "save": "Save Pet"
+    }
+  },
+  "booking": {
+    "title": "Book Appointment",
+    "subtitle": "Schedule a visit with our specialists",
+    "form": {
+      "select_pet": "Select Pet",
+      "select_doctor": "Select Doctor (Optional)",
+      "date": "Preferred Date",
+      "reason": "Reason for Visit",
+      "reason_placeholder": "Describe the symptoms or reason for your visit...",
+      "cancel": "Cancel",
+      "book": "Book Appointment"
+    }
   }
 }

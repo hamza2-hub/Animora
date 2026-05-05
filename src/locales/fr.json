@@ -38,5 +38,43 @@
     "loading_requests": "Chargement des demandes...",
     "no_recent_requests": "Aucune demande récente.",
     "general_checkup": "Consultation Générale"
+  },
+  "pets": {
+    "title": "Mes Animaux",
+    "subtitle": "Voir et gérer vos animaux enregistrés",
+    "all_pets": "Tous les animaux",
+    "register": "Ajouter un Animal",
+    "no_pets_title": "Aucun animal",
+    "no_pets_message": "Vous n'avez pas encore enregistré d'animaux. Ajoutez votre premier compagnon à quatre pattes pour commencer ! 🐾",
+    "form": {
+      "title": "Ajouter un Animal",
+      "name": "Nom de l'animal",
+      "name_placeholder": "ex. Bella",
+      "type": "Type d'animal",
+      "type_placeholder": "ex. Chien, Chat, Oiseau",
+      "breed": "Race (Optionnel)",
+      "breed_placeholder": "ex. Golden Retriever",
+      "age": "Âge en années (Optionnel)",
+      "age_placeholder": "ex. 5",
+      "image": "Photo de l'animal",
+      "uploading": "Chargement...",
+      "upload_click": "Cliquez pour uploader une photo",
+      "upload_limit": "JPG, PNG, WEBP jusqu'à 5 Mo",
+      "cancel": "Annuler",
+      "save": "Enregistrer"
+    }
+  },
+  "booking": {
+    "title": "Prendre Rendez-vous",
+    "subtitle": "Planifiez une visite avec nos spécialistes",
+    "form": {
+      "select_pet": "Sélectionner un Animal",
+      "select_doctor": "Sélectionner un Docteur (Optionnel)",
+      "date": "Date Souhaitée",
+      "reason": "Raison de la Visite",
+      "reason_placeholder": "Décrivez les symptômes ou la raison de votre visite...",
+      "cancel": "Annuler",
+      "book": "Confirmer le Rendez-vous"
+    }
   }
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, X, Loader2, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import Button from '../../components/common/Button';
 import PetCard from '../../components/common/PetCard';
 import EmptyState from '../../components/common/EmptyState';
@@ -11,6 +12,7 @@ import { toast } from 'react-hot-toast';
 import '../../styles/pages/dashboard.css';
 
 const MyPets = () => {
+  const { t } = useTranslation();
   const { pets, loading: isLoading, removePetFromState, addPetToState } = usePets();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,7 +35,6 @@ const MyPets = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       toast.error('Please upload an image file.');
       return;
@@ -46,7 +47,7 @@ const MyPets = () => {
       const filePath = `pets/${fileName}`;
 
       const { data, error } = await supabase.storage
-        .from('medical-files') // Reusing existing bucket or use 'pets' if it exists
+        .from('medical-files')
         .upload(filePath, file);
 
       if (error) throw error;
@@ -70,7 +71,6 @@ const MyPets = () => {
     setIsSubmitting(true);
     try {
       const newPet = await petService.addPet(formData);
-      // Optimistically add to UI instantly
       addPetToState(newPet);
       toast.success('Pet registered successfully!');
       setIsModalOpen(false);
@@ -85,7 +85,6 @@ const MyPets = () => {
 
   const handleDelete = async (petId, petName) => {
     if (!window.confirm(`Are you sure you want to remove "${petName}" from your pets? This cannot be undone.`)) return;
-    // Optimistic update: remove immediately from UI
     removePetFromState(petId);
     try {
       await petService.deletePet(petId);
@@ -93,7 +92,6 @@ const MyPets = () => {
     } catch (error) {
       toast.error('Failed to delete pet. Please try again.');
       console.error(error);
-      // Re-fetch to restore state if delete failed
       window.location.reload();
     }
   };
@@ -102,17 +100,17 @@ const MyPets = () => {
     <div className="animate-fade-in relative">
       <div className="dashboard-header flex justify-between items-center">
         <div>
-          <h1 className="dashboard-title">My Pets</h1>
-          <p className="dashboard-subtitle">View and manage your registered pets</p>
+          <h1 className="dashboard-title">{t('pets.title')}</h1>
+          <p className="dashboard-subtitle">{t('pets.subtitle')}</p>
         </div>
       </div>
 
       <div className="section-card animate-slide-up">
         <div className="section-header">
-          <h2 className="section-title">All Pets</h2>
+          <h2 className="section-title">{t('pets.all_pets')}</h2>
           {(!isLoading && pets.length > 0) && (
             <Button onClick={() => setIsModalOpen(true)}>
-              <Plus size={18} className="mr-2" /> Register Pet
+              <Plus size={18} className="mr-2" /> {t('pets.register')}
             </Button>
           )}
         </div>
@@ -145,9 +143,9 @@ const MyPets = () => {
               pointerEvents: 'none'
             }}></div>
             <EmptyState 
-              title="No pets yet" 
-              message="You haven't registered any pets yet. Add your first furry friend to get started! 🐾" 
-              actionText="Register Pet"
+              title={t('pets.no_pets_title')} 
+              message={t('pets.no_pets_message')} 
+              actionText={t('pets.register')}
               onAction={() => setIsModalOpen(true)}
             />
           </div>
@@ -202,32 +200,32 @@ const MyPets = () => {
         <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h3 className="modal-title">Register New Pet</h3>
+              <h3 className="modal-title">{t('pets.form.title')}</h3>
               <button className="modal-close" onClick={() => setIsModalOpen(false)}>
                 <X size={24} />
               </button>
             </div>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label className="form-label">Pet Name</label>
-                <input type="text" name="name" className="form-input" placeholder="e.g. Bella" value={formData.name} onChange={handleInputChange} required />
+                <label className="form-label">{t('pets.form.name')}</label>
+                <input type="text" name="name" className="form-input" placeholder={t('pets.form.name_placeholder')} value={formData.name} onChange={handleInputChange} required />
               </div>
               <div className="form-group">
-                <label className="form-label">Animal Type</label>
-                <input type="text" name="type" className="form-input" placeholder="e.g. Dog, Cat, Bird" value={formData.type} onChange={handleInputChange} required />
+                <label className="form-label">{t('pets.form.type')}</label>
+                <input type="text" name="type" className="form-input" placeholder={t('pets.form.type_placeholder')} value={formData.type} onChange={handleInputChange} required />
               </div>
               <div className="settings-grid-2">
                 <div className="form-group">
-                  <label className="form-label">Breed (Optional)</label>
-                  <input type="text" name="breed" className="form-input" placeholder="e.g. Golden Retriever" value={formData.breed} onChange={handleInputChange} />
+                  <label className="form-label">{t('pets.form.breed')}</label>
+                  <input type="text" name="breed" className="form-input" placeholder={t('pets.form.breed_placeholder')} value={formData.breed} onChange={handleInputChange} />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Age in Years (Optional)</label>
-                  <input type="number" min="0" max="50" name="age" className="form-input" placeholder="e.g. 5" value={formData.age} onChange={handleInputChange} />
+                  <label className="form-label">{t('pets.form.age')}</label>
+                  <input type="number" min="0" max="50" name="age" className="form-input" placeholder={t('pets.form.age_placeholder')} value={formData.age} onChange={handleInputChange} />
                 </div>
               </div>
               <div className="form-group settings-col-span-2">
-                <label className="form-label">Pet Image</label>
+                <label className="form-label">{t('pets.form.image')}</label>
                 <div className="flex flex-col gap-2">
                   {formData.image_url ? (
                     <div className="relative w-full h-32 rounded-xl overflow-hidden border border-zinc-200 group">
@@ -259,13 +257,13 @@ const MyPets = () => {
                         {isUploading ? (
                           <div className="flex flex-col items-center gap-2">
                             <Loader2 className="animate-spin text-emerald-600" size={24} />
-                            <span className="text-xs text-zinc-500 font-medium">Uploading...</span>
+                            <span className="text-xs text-zinc-500 font-medium">{t('pets.form.uploading')}</span>
                           </div>
                         ) : (
                           <div className="flex flex-col items-center gap-2">
                             <Plus className="text-zinc-400" size={24} />
-                            <span className="text-xs text-zinc-500 font-medium text-center px-4">Click to upload pet photo</span>
-                            <span className="text-[10px] text-zinc-400">JPG, PNG, WEBP up to 5MB</span>
+                            <span className="text-xs text-zinc-500 font-medium text-center px-4">{t('pets.form.upload_click')}</span>
+                            <span className="text-[10px] text-zinc-400">{t('pets.form.upload_limit')}</span>
                           </div>
                         )}
                       </label>
@@ -274,9 +272,9 @@ const MyPets = () => {
                 </div>
               </div>
               <div className="flex gap-4 mt-6 justify-end">
-                <Button variant="outline" type="button" onClick={() => setIsModalOpen(false)} disabled={isSubmitting}>Cancel</Button>
+                <Button variant="outline" type="button" onClick={() => setIsModalOpen(false)} disabled={isSubmitting}>{t('pets.form.cancel')}</Button>
                 <Button variant="primary" type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : 'Save Pet'}
+                  {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : t('pets.form.save')}
                 </Button>
               </div>
             </form>

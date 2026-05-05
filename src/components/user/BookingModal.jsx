@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Calendar, Clock, User, MessageSquare, Loader2, Paperclip } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import Button from '../common/Button';
 import FileAttachZone from '../common/FileAttachZone';
 import { appointmentService } from '../../services/appointmentService';
@@ -9,6 +10,7 @@ import { supabase } from '../../lib/supabase';
 import toast from 'react-hot-toast';
 
 const BookingModal = ({ isOpen, onClose, onBookingSuccess }) => {
+  const { t } = useTranslation();
   const [doctors, setDoctors] = useState([]);
   const [pets, setPets] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -96,7 +98,7 @@ const BookingModal = ({ isOpen, onClose, onBookingSuccess }) => {
       const payload = {
         doctor_id: formData.doctor_id || null,
         pet_id: formData.pet_id,
-        date: formData.date, // datetime-local value
+        date: formData.date,
         notes: formData.notes,
         files: fileRecords,
         status: 'pending'
@@ -143,8 +145,8 @@ const BookingModal = ({ isOpen, onClose, onBookingSuccess }) => {
           {/* Header */}
           <div className="p-6 border-b border-zinc-100 flex justify-between items-center bg-emerald-50/50 shrink-0">
             <div>
-              <h2 className="text-xl font-bold text-zinc-900">Create Appointment Request</h2>
-              <p className="text-sm text-zinc-500">Schedule a visit with our specialists</p>
+              <h2 className="text-xl font-bold text-zinc-900">{t('booking.title')}</h2>
+              <p className="text-sm text-zinc-500">{t('booking.subtitle')}</p>
             </div>
             <button onClick={handleClose} className="p-2 hover:bg-white rounded-full transition-colors text-zinc-400">
               <X size={20} />
@@ -164,7 +166,7 @@ const BookingModal = ({ isOpen, onClose, onBookingSuccess }) => {
                   {/* Pet Selection */}
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-zinc-700 flex items-center gap-2">
-                      <span className="size-4 bg-emerald-600 rounded-full flex items-center justify-center text-[10px] text-white">P</span> Which Pet? *
+                      <span className="size-4 bg-emerald-600 rounded-full flex items-center justify-center text-[10px] text-white">P</span> {t('booking.form.select_pet')} *
                     </label>
                     <select 
                       required
@@ -172,7 +174,7 @@ const BookingModal = ({ isOpen, onClose, onBookingSuccess }) => {
                       onChange={(e) => setFormData({...formData, pet_id: e.target.value})}
                       className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none bg-zinc-50/50"
                     >
-                      <option value="">Select a pet</option>
+                      <option value="">{t('booking.form.select_pet')}</option>
                       {pets.map(pet => (
                         <option key={pet.id} value={pet.id}>{pet.name} ({pet.type})</option>
                       ))}
@@ -182,7 +184,7 @@ const BookingModal = ({ isOpen, onClose, onBookingSuccess }) => {
                   {/* Doctor Selection */}
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-zinc-700 flex items-center gap-2">
-                      <User size={16} className="text-emerald-600" /> Select Doctor (Optional)
+                      <User size={16} className="text-emerald-600" /> {t('booking.form.select_doctor')}
                     </label>
                     <select 
                       value={formData.doctor_id}
@@ -199,7 +201,7 @@ const BookingModal = ({ isOpen, onClose, onBookingSuccess }) => {
                   {/* Date/Time */}
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-zinc-700 flex items-center gap-2">
-                      <Calendar size={16} className="text-emerald-600" /> Preferred Date *
+                      <Calendar size={16} className="text-emerald-600" /> {t('booking.form.date')} *
                     </label>
                     <input 
                       type="datetime-local"
@@ -228,11 +230,11 @@ const BookingModal = ({ isOpen, onClose, onBookingSuccess }) => {
                   {/* Reason/Notes */}
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-zinc-700 flex items-center gap-2">
-                      <MessageSquare size={16} className="text-emerald-600" /> Reason for Visit
+                      <MessageSquare size={16} className="text-emerald-600" /> {t('booking.form.reason')}
                     </label>
                     <textarea 
                       rows={3}
-                      placeholder="e.g. Annual checkup, acting lethargic, previous treatment info..."
+                      placeholder={t('booking.form.reason_placeholder')}
                       value={formData.notes}
                       onChange={(e) => setFormData({...formData, notes: e.target.value})}
                       className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none bg-zinc-50/50 resize-none"
@@ -256,14 +258,14 @@ const BookingModal = ({ isOpen, onClose, onBookingSuccess }) => {
                       className="flex-1"
                       onClick={handleClose}
                     >
-                      Cancel
+                      {t('booking.form.cancel')}
                     </Button>
                     <Button 
                       type="submit" 
                       className="flex-[2]"
                       isLoading={isSubmitting}
                     >
-                      Submit Request
+                      {t('booking.form.book')}
                     </Button>
                   </div>
                 </>
